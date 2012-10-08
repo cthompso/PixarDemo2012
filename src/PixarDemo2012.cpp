@@ -174,18 +174,18 @@ void PixarDemo2012::bindShaders()
 void PixarDemo2012::createMesh()
 {
     
-    int32_t mMeshWidth = 1;
+    int32_t numCubes = 10;
     //int32_t mMeshLength = 2;
 	float delta = 0.001f;
 	float theta = 0.0f;
-	for (float x = 0.0f; x < mMeshWidth; x++) {
+	for (float x = 0.0f; x < numCubes; x++) {
         //		for (int32_t y = 0; y < mMeshLength; y++)
 		{
 			//mVboIndices.push_back(x * mMeshLength + y);
 			//mVboTexCoords.push_back(Vec2f((float)x / (float)mMeshWidth, (float)y / (float)mMeshLength));
 			//Vec3f position((float)x - (float)mMeshWidth * 0.01f, (float)y - (float)mMeshLength * 0.01f, 0.0f);
-            cout << "creating mesh" << endl;
-            Vec3f position((float)x * 0.0f, (float)x * 0.0f, 0.0f);
+            
+            Vec3f position(randVec3f()*10.0f);
 			mVboVertices.push_back(position);
 			theta += delta;
 		}
@@ -287,16 +287,15 @@ void PixarDemo2012::draw()
 	gl::setMatrices( mCamera );
 	gl::clear( ColorAf::gray( 0.2f ) );
     
-
     if ( drawMindField ) {
     	gl::enableDepthRead();
-        gl::enableDepthWrite();
+        gl::enableDepthWrite();        
         theMindField.Render();
         gl::disableDepthRead();
         gl::disableDepthWrite();
         return;
     }
-    
+
     // draw FBO bg
     gl::setMatricesWindow( getWindowSize(), true );
     gl::color(1.0f,1.0f,1.0f);
@@ -304,6 +303,7 @@ void PixarDemo2012::draw()
     
     // reset camera for geometry
     gl::popMatrices();
+    
     gl::setMatrices( mCamera );
     
     // draw VBO
@@ -311,8 +311,8 @@ void PixarDemo2012::draw()
     mCubesShader.uniform("mTime", (float)mTime);
     gl::draw( mVboMesh );
     mCubesShader.unbind();
-    gl::popMatrices();
-    
+    //gl::popMatrices();
+        
     gl::setMatricesWindow( getWindowSize(), true );
     
     // draw UV texture billboard
@@ -385,8 +385,8 @@ void PixarDemo2012::setup()
 
     // BASIC SETUP
     mTime           = 0.0f;
-    drawScreenUV    = true;
-    drawCairoFBO    = true;
+    drawScreenUV    = false;
+    drawCairoFBO    = false;
     drawMindField   = false;
     drawFFT         = false;
     mFullScreen     = false;
@@ -436,8 +436,8 @@ void PixarDemo2012::setup()
 	mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
 	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
     
-    mCamera.setEyePoint(Vec3f(10.0, 10.0, -10.0));
-    mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
+    //mCamera.setEyePoint(Vec3f(10.0, 10.0, -10.0));
+    //mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
     
     //CAIRO
     mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
@@ -484,9 +484,8 @@ void PixarDemo2012::update()
     if ( mFullScreen != isFullScreen() ) {
         setFullScreen(mFullScreen);
         mCamera.setAspectRatio(getWindowAspectRatio());
+        mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
     }
-    
-
     
 	// Check if track is playing and has a PCM buffer available
 	if ( mTrack->isPlaying() && mTrack->isPcmBuffering() ) {
@@ -517,7 +516,7 @@ void PixarDemo2012::update()
     
     if ( drawMindField ) {
         theMindField.Update();
-
+    }
         Vec3f pos = mCamera.getEyePoint();
         
         Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
@@ -537,7 +536,7 @@ void PixarDemo2012::update()
             mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
         }
         
-    }    
+//    }    
     
 }
 

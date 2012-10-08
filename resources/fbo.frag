@@ -107,7 +107,7 @@ void main()
     float yscale = 1.0 - gl_FragCoord.y / resolution.y;
     val *= yscale * yscale;
 	vec3 fCol = vec3(val);
-	gl_FragColor.rgb = fCol * vec3(0.2,0.6,1.0);// * DiffuseColor;
+	gl_FragColor.rgb = fCol * vec3(0.2,0.6,2.0);// * DiffuseColor;
 //	gl_FragColor.rgb = mNorm;
 //	gl_FragColor.rgb = vec3(1,0,0);
 	gl_FragColor.a = 1.0;
