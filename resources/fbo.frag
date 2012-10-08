@@ -5,6 +5,7 @@ uniform vec3 sCol;
 uniform vec3 sPos;
 varying vec3  DiffuseColor;
 uniform float mTime;
+uniform vec2 resolution;
 
 vec3 mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -100,14 +101,16 @@ float snoise(vec3 v)
 
 void main()
 {
-    float scale = 0.001;
-    vec3 nSpace = vec3(gl_FragCoord.x*scale,gl_FragCoord.y*scale,mTime);
+    float scale = 0.0025;
+    vec3 nSpace = vec3(gl_FragCoord.x*scale,gl_FragCoord.y*scale,mTime*0.3);
     float val = (snoise(nSpace) + 1.0) * 0.5;
+    float yscale = 1.0 - gl_FragCoord.y / resolution.y;
+    val *= yscale * yscale;
 	vec3 fCol = vec3(val);
-	gl_FragColor.rgb = fCol * vec3(0.2,0.6,1.0);// * DiffuseColor;
+	gl_FragColor.rgb = fCol * vec3(0.2,0.6,2.0);// * DiffuseColor;
 //	gl_FragColor.rgb = mNorm;
 //	gl_FragColor.rgb = vec3(1,0,0);
-	gl_FragColor.a = 0.6;
+	gl_FragColor.a = 1.0;
 //	gl_FragColor = vec4(1,0,0,1);
 }
 

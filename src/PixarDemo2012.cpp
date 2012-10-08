@@ -63,6 +63,7 @@ private:
     double mTime;
     bool drawScreenUV;
     bool drawCairoFBO;
+    bool drawFFT;
     bool mFullScreen;
     
     ci::CameraPersp				mCamera;
@@ -111,6 +112,7 @@ void PixarDemo2012::keyDown( KeyEvent event )
 {
     if ( event.getChar() == 'u' ) drawScreenUV = !drawScreenUV;
     if ( event.getChar() == 'c' ) drawCairoFBO = !drawCairoFBO;
+    if ( event.getChar() == 'f' ) drawFFT = !drawFFT;
     if ( event.getChar() == 'x' ) mFullScreen = !mFullScreen;
     if ( event.getChar() == 's' ) bindShaders();
 }
@@ -172,7 +174,7 @@ void PixarDemo2012::createMesh()
 			//mVboTexCoords.push_back(Vec2f((float)x / (float)mMeshWidth, (float)y / (float)mMeshLength));
 			//Vec3f position((float)x - (float)mMeshWidth * 0.01f, (float)y - (float)mMeshLength * 0.01f, 0.0f);
             cout << "creating mesh" << endl;
-            Vec3f position((float)x * 1.0f, (float)x * 1.0f, 0.0f);
+            Vec3f position((float)x * 0.0f, (float)x * 0.0f, 0.0f);
 			mVboVertices.push_back(position);
 			theta += delta;
 		}
@@ -213,6 +215,7 @@ void PixarDemo2012::renderGradientFBO()
     mGradientShader.bind();
     float what = mTime;
     mGradientShader.uniform("mTime", what);
+    mGradientShader.uniform("resolution", Vec2f((float)getWindowWidth(),(float)getWindowHeight()));
     gl::drawSolidRect( getWindowBounds() );
     mGradientShader.unbind();
     //    mGradientFBO.unbindTexture();
@@ -271,10 +274,11 @@ void PixarDemo2012::draw()
 	// Set up window
     gl::setViewport( getWindowBounds() );
 	gl::setMatrices( mCamera );
-	gl::clear( ColorAf::gray( 0.6f ) );
+    gl::clear( ColorAf::gray( 0.0f ) );
     
     // draw FBO bg
     gl::setMatricesWindow( getWindowSize(), true );
+    gl::color(1.0f,1.0f,1.0f);
     gl::draw( mGradientFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
     
     // reset camera for geometry
@@ -291,17 +295,18 @@ void PixarDemo2012::draw()
     
     // draw UV texture billboard
     if ( drawScreenUV ) {
+        gl::color(1.0f, 1.0f, 1.0f,0.5f);
         mTexture.enableAndBind();
         gl::drawSolidRect(getWindowBounds());
         mTexture.unbind();
-        mGradientFBO.bindTexture();
-        gl::drawSolidRect(getWindowBounds());
-        mGradientFBO.unbindTexture();
-        
+        //mGradientFBO.bindTexture();
+        //gl::drawSolidRect(getWindowBounds());
+        //mGradientFBO.unbindTexture();
     }
     
     // draw Cairo context
     if ( drawCairoFBO ) {
+        gl::color(1.0f, 1.0f, 1.0f,1.0f);
         renderCairoFBO();
     }
 
@@ -343,8 +348,10 @@ void PixarDemo2012::draw()
 		}
 
 		// Draw signals
-		gl::draw( freqLine );
-		gl::draw( timeLine );
+        if ( drawFFT ) {
+            gl::draw( freqLine );
+            gl::draw( timeLine );
+        }
         gl::color(1.0f, 1.0f, 1.0f);
         if (make > 0.075f) mParticleController.addParticles(1,make*80.0f,mTime);
         mParticleController.draw();
@@ -361,6 +368,7 @@ void PixarDemo2012::setup()
     mTime           = 0.0f;
     drawScreenUV    = true;
     drawCairoFBO    = true;
+    drawFFT         = false;
     mFullScreen     = false;
     
 	setFrameRate( 60.0f );

@@ -49,7 +49,7 @@
 		3B0506C31620BE640070F0D5 /* cubes.geom */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cubes.geom; sourceTree = "<group>"; };
 		3B0506C41620BE640070F0D5 /* cubes.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cubes.vert; sourceTree = "<group>"; };
 		3B0506C51620BE640070F0D5 /* diva.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = diva.m4a; sourceTree = "<group>"; };
-		3B0506C61620BE640070F0D5 /* fbo.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fbo.frag; sourceTree = "<group>"; };
+		3B0506C61620BE640070F0D5 /* fbo.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fbo.frag; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		3B0506C71620BE640070F0D5 /* fbo.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fbo.vert; sourceTree = "<group>"; };
 		3B0506C81620BE640070F0D5 /* uv.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uv.jpg; sourceTree = "<group>"; };
 		3B0506C91620BE640070F0D5 /* uv.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uv.png; sourceTree = "<group>"; };
