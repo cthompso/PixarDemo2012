@@ -68,9 +68,7 @@ private:
     double mTime;
     bool drawScreenUV;
     bool drawCairoFBO;
-    bool drawFFT;
     bool mFullScreen;
-    bool drawMindField;
     
     ci::CameraPersp				mCamera;
     
@@ -120,9 +118,7 @@ void PixarDemo2012::mouseDown( MouseEvent event )
 void PixarDemo2012::keyDown( KeyEvent event )
 {
     if ( event.getChar() == 'u' ) drawScreenUV = !drawScreenUV;
-    if ( event.getChar() == 'm' ) drawMindField = !drawMindField;
     if ( event.getChar() == 'c' ) drawCairoFBO = !drawCairoFBO;
-    if ( event.getChar() == 'f' ) drawFFT = !drawFFT;
     if ( event.getChar() == 'x' ) mFullScreen = !mFullScreen;
     if ( event.getChar() == 's' ) bindShaders();
 }
@@ -132,7 +128,7 @@ void PixarDemo2012::bindShaders()
     
     theMindField.bindShaders();
     string mPath = getResourcePath().generic_string();
-    mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+    mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string mVert = mPath + "/fbo.vert";
     string mFrag = mPath + "/fbo.frag";
     mGradientVertex = mVert.c_str();
@@ -174,7 +170,7 @@ void PixarDemo2012::bindShaders()
 void PixarDemo2012::createMesh()
 {
     
-    int32_t mMeshWidth = 1;
+    int32_t mMeshWidth = 4;
     //int32_t mMeshLength = 2;
 	float delta = 0.001f;
 	float theta = 0.0f;
@@ -185,7 +181,7 @@ void PixarDemo2012::createMesh()
 			//mVboTexCoords.push_back(Vec2f((float)x / (float)mMeshWidth, (float)y / (float)mMeshLength));
 			//Vec3f position((float)x - (float)mMeshWidth * 0.01f, (float)y - (float)mMeshLength * 0.01f, 0.0f);
             cout << "creating mesh" << endl;
-            Vec3f position((float)x * 0.0f, (float)x * 0.0f, 0.0f);
+            Vec3f position((float)x * 1.0f, (float)x * 1.0f, 0.0f);
 			mVboVertices.push_back(position);
 			theta += delta;
 		}
@@ -226,7 +222,6 @@ void PixarDemo2012::renderGradientFBO()
     mGradientShader.bind();
     float what = mTime;
     mGradientShader.uniform("mTime", what);
-    mGradientShader.uniform("resolution", Vec2f((float)getWindowWidth(),(float)getWindowHeight()));
     gl::drawSolidRect( getWindowBounds() );
     mGradientShader.unbind();
     //    mGradientFBO.unbindTexture();
@@ -279,7 +274,7 @@ void PixarDemo2012::renderCairoFBO() {
 void PixarDemo2012::draw()
 {
     //render Gradient FBO
-    renderGradientFBO();
+    //renderGradientFBO();
     
 	// clear out the window with black
 	// Set up window
@@ -288,27 +283,20 @@ void PixarDemo2012::draw()
 	gl::clear( ColorAf::gray( 0.2f ) );
     
 
-    if ( drawMindField ) {
-    	gl::enableDepthRead();
-        gl::enableDepthWrite();
-        theMindField.Render();
-        gl::disableDepthRead();
-        gl::disableDepthWrite();
-        return;
-    }
+    theMindField.Render();
+
+    return;
     
     // draw FBO bg
     gl::setMatricesWindow( getWindowSize(), true );
-    gl::color(1.0f,1.0f,1.0f);
     gl::draw( mGradientFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
     
     // reset camera for geometry
     gl::popMatrices();
-    gl::setMatrices( mCamera );
+    //gl::setMatrices( mCamera );
     
     // draw VBO
     mCubesShader.bind();
-    mCubesShader.uniform("mTime", (float)mTime);
     gl::draw( mVboMesh );
     mCubesShader.unbind();
     gl::popMatrices();
@@ -317,15 +305,17 @@ void PixarDemo2012::draw()
     
     // draw UV texture billboard
     if ( drawScreenUV ) {
-        gl::color(1.0f, 1.0f, 1.0f,0.5f);
         mTexture.enableAndBind();
         gl::drawSolidRect(getWindowBounds());
         mTexture.unbind();
+        mGradientFBO.bindTexture();
+        gl::drawSolidRect(getWindowBounds());
+        mGradientFBO.unbindTexture();
+        
     }
     
     // draw Cairo context
     if ( drawCairoFBO ) {
-        gl::color(1.0f, 1.0f, 1.0f,1.0f);
         renderCairoFBO();
     }
 
@@ -367,10 +357,8 @@ void PixarDemo2012::draw()
 		}
 
 		// Draw signals
-        if ( drawFFT ) {
-            gl::draw( freqLine );
-            gl::draw( timeLine );
-        }
+		gl::draw( freqLine );
+		gl::draw( timeLine );
         gl::color(1.0f, 1.0f, 1.0f);
         if (make > 0.075f) mParticleController.addParticles(1,make*80.0f,mTime);
         mParticleController.draw();
@@ -387,8 +375,6 @@ void PixarDemo2012::setup()
     mTime           = 0.0f;
     drawScreenUV    = true;
     drawCairoFBO    = true;
-    drawMindField   = false;
-    drawFFT         = false;
     mFullScreen     = false;
     
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
@@ -405,6 +391,8 @@ void PixarDemo2012::setup()
     //	glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
     //	gl::enable( GL_NORMALIZE );
     //	gl::enableAlphaBlending();
+    	gl::enableDepthRead();
+    	gl::enableDepthWrite();
 	
 	// LOAD AUDIO
 	mAudioSource = audio::load( loadResource("diva.m4a") );//RES_SAMPLE ) );
@@ -433,8 +421,8 @@ void PixarDemo2012::setup()
     
     
 	// CAMERA
-	mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
-	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
+	mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 100.0f );
+//	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -2.0f ), Vec3f::zero() );
     
     mCamera.setEyePoint(Vec3f(10.0, 10.0, -10.0));
     mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
@@ -478,7 +466,6 @@ void PixarDemo2012::update()
 {
     
     mTime += 0.01f;
-
     
   
     if ( mFullScreen != isFullScreen() ) {
@@ -515,29 +502,62 @@ void PixarDemo2012::update()
 
 	}
     
-    if ( drawMindField ) {
-        theMindField.Update();
+    theMindField.Update();
+    
+    Vec3f pos = mCamera.getEyePoint();
+    //pos.x = pos.x + 0.1;
+    //mCamera.setEyePoint(pos);
+    //printf("%f %f %f \n", pos.x, pos.y, pos.z);
+    
+    /*
+    double r, theta, phi;
+    theMindField.cartesianToSpherical(r, theta, phi, pos.x, pos.y, pos.z);
 
-        Vec3f pos = mCamera.getEyePoint();
-        
-        Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
-        mCamera.setEyePoint(newPos);
-        mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
-        
-        mLerper = mLerper + 0.00001* getFrameRate();
-        if(mLerper >= 1.0)
-        {
-            mLerper = 0.0;
-            mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
-        }
-        
-        if(pos.distance(mNextCamPoint) < 5)
-        {
-            mLerper = 0.0;
-            mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
-        }
-        
-    }    
+    //theta = theta + (0.1 * pi/180.0);
+    
+    
+     phi = phi +( 0.1 * pi / 180);
+   //  theta = theta + (0.005 * pi / 180);
+    
+    if(phi < 0.0)
+        phi += 2.0 * pi;
+    if(phi > 2.0 * pi)
+        phi -= 2.0 * pi;
+    
+    if(theta < 0.0)
+        theta += pi;
+    if(theta > pi)
+        theta -= pi;
+    
+     r = r + sin(0.1*getElapsedFrames()) *0.01 ;
+    
+    double x, y, z;
+    theMindField.sphericalToCartesian(x, y, z, r, theta, phi);
+   // printf("%lf %lf %lf\n", x, y, z);
+   mCamera.setEyePoint(Vec3f(x, y, z));
+    mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
+    
+    //mCamera.lookAt( Vec3f(x, y ,z), Vec3f::zero(), Vec3f(x, y ,z).randomOrthogonal() );
+    */
+    
+    //printf("%f\n", mLerper);
+    Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
+    mCamera.setEyePoint(newPos);
+    mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
+    
+    mLerper = mLerper + 0.00001* getFrameRate();
+    if(mLerper >= 1.0)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    
+    if(pos.distance(mNextCamPoint) < 5)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    
     
 }
 
