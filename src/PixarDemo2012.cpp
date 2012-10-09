@@ -71,6 +71,10 @@ private:
     bool drawFFT;
     bool mFullScreen;
     bool drawMindField;
+    bool drawFPS;
+    
+    // FONT
+    Font mFont;
     
     ci::CameraPersp				mCamera;
     
@@ -93,6 +97,7 @@ private:
 	std::vector<ci::Vec2f> mVboTexCoords;
 	std::vector<ci::Vec3f> mVboVertices;
 	ci::gl::VboMesh	mVboMesh;
+    Rand mRand;
     
     
     //shaders
@@ -123,13 +128,15 @@ void PixarDemo2012::keyDown( KeyEvent event )
     if ( event.getChar() == 'm' ) drawMindField = !drawMindField;
     if ( event.getChar() == 'c' ) drawCairoFBO = !drawCairoFBO;
     if ( event.getChar() == 'f' ) drawFFT = !drawFFT;
+    if ( event.getChar() == 't' ) drawFPS = !drawFPS;
     if ( event.getChar() == 'x' ) mFullScreen = !mFullScreen;
     if ( event.getChar() == 's' ) bindShaders();
+
 }
 
 void PixarDemo2012::bindShaders()
 {
-    
+    printf("%s\n", glGetString(GL_VERSION));   
     theMindField.bindShaders();
     string mPath = getResourcePath().generic_string();
     mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
@@ -153,7 +160,7 @@ void PixarDemo2012::bindShaders()
             glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, & maxGeomOutputVertices);
             
             mGradientShader = gl::GlslProg( loadFile( mGradientVertex ), loadFile( mGradientFrag ) );
-            mCubesShader = gl::GlslProg( loadFile( mCubesVertex ), loadFile( mCubesFrag) , loadFile( mCubesGeom ), GL_POINTS, GL_TRIANGLE_STRIP, maxGeomOutputVertices );
+            mCubesShader = gl::GlslProg( loadFile( mCubesVertex ), loadFile( mCubesFrag) , loadFile( mCubesGeom ), GL_POINTS, GL_TRIANGLE_STRIP, 37);//maxGeomOutputVertices );
         } else {
             //for install
             mGradientShader = gl::GlslProg( loadResource( mGradientVertex ), loadResource( mGradientFrag ) );
@@ -174,19 +181,29 @@ void PixarDemo2012::bindShaders()
 void PixarDemo2012::createMesh()
 {
     
-    int32_t numCubes = 10;
+    int32_t numCubes = 6000;
     //int32_t mMeshLength = 2;
 	float delta = 0.001f;
 	float theta = 0.0f;
-	for (float x = 0.0f; x < numCubes; x++) {
+    double limit = 200.0f;
+    
+	for (int32_t x = 0; x < numCubes; x++) {
         //		for (int32_t y = 0; y < mMeshLength; y++)
 		{
 			//mVboIndices.push_back(x * mMeshLength + y);
 			//mVboTexCoords.push_back(Vec2f((float)x / (float)mMeshWidth, (float)y / (float)mMeshLength));
 			//Vec3f position((float)x - (float)mMeshWidth * 0.01f, (float)y - (float)mMeshLength * 0.01f, 0.0f);
-            
-            Vec3f position(randVec3f()*10.0f);
+            mPerlin = Perlin(3,x);
+
+            mPerlin.setSeed(1);
+            double xx = mPerlin.fBm(randVec3f());
+            mPerlin.setSeed(2);
+            double yy = mPerlin.fBm(randVec3f());
+            mPerlin.setSeed(3);
+            double zz = mPerlin.fBm(randVec3f());
+            Vec3f position( xx*limit, yy*limit, zz*limit );
 			mVboVertices.push_back(position);
+            mVboTexCoords.push_back(Vec2f(x/numCubes,x/numCubes));
 			theta += delta;
 		}
     }
@@ -194,9 +211,9 @@ void PixarDemo2012::createMesh()
 	if (mVboMesh)
 		mVboMesh.reset();
     mVboMesh = ci::gl::VboMesh(mVboVertices.size(),mVboIndices.size(), mVboLayout, GL_POINTS);
-	//mVboMesh.bufferIndices(mVboIndices);
+//	mVboMesh.bufferIndices(mVboIndices);
 	mVboMesh.bufferPositions(mVboVertices);
-	//mVboMesh.bufferTexCoords2d(0, mVboTexCoords);
+	mVboMesh.bufferTexCoords2d(mVboTexCoords.size(), mVboTexCoords);
 	mVboMesh.unbindBuffers();
     
 	// Clean up
@@ -307,12 +324,24 @@ void PixarDemo2012::draw()
     gl::setMatrices( mCamera );
     
     // draw VBO
+    gl::enableDepthRead();
+    gl::enableDepthWrite();
+    gl::enable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    
+    gl::enableAlphaBlending();
+    
     mCubesShader.bind();
     mCubesShader.uniform("mTime", (float)mTime);
     gl::draw( mVboMesh );
     mCubesShader.unbind();
     //gl::popMatrices();
-        
+
+    gl::disable(GL_CULL_FACE);
+    gl::disableDepthRead();
+    gl::disableDepthWrite();
+    
     gl::setMatricesWindow( getWindowSize(), true );
     
     // draw UV texture billboard
@@ -372,11 +401,16 @@ void PixarDemo2012::draw()
             gl::draw( timeLine );
         }
         gl::color(1.0f, 1.0f, 1.0f);
-        if (make > 0.075f) mParticleController.addParticles(1,make*80.0f,mTime);
+        if (make > 0.075f) mParticleController.addParticles(1,make*100.0f,mTime);
         mParticleController.draw();
-        mParticleController.update();
-	}
 
+	}
+    
+    if ( drawFPS ) {
+        string mString;
+        mString = str(boost::format("Framerate: %f") % getAverageFps() );
+        gl::drawString( mString, Vec2f( 10.0f, 10.0f ), Color::white(), mFont );
+    }
 }
 
 // Set up
@@ -390,6 +424,7 @@ void PixarDemo2012::setup()
     drawMindField   = false;
     drawFFT         = false;
     mFullScreen     = false;
+    drawFPS         = false;
     
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
     mLerper = 0.0f;
@@ -397,9 +432,11 @@ void PixarDemo2012::setup()
 	setFrameRate( 60.0f );
 	setWindowSize( 600, 600 );
 
+    mFont = Font( loadResource("Calibri.ttf"), 18.0f );
+    
 	// RENDER PREFS
-	gl::enable( GL_LINE_SMOOTH );
-	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+	//gl::enable( GL_LINE_SMOOTH );
+	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 	gl::color( ColorAf::white() );
     //    gl::enable( GL_POLYGON_SMOOTH );
     //	glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
@@ -419,7 +456,7 @@ void PixarDemo2012::setup()
     // VBO SETUP
     //	mVboLayout.setStaticIndices();
 	mVboLayout.setStaticPositions();
-    //	mVboLayout.setStaticTexCoords2d();
+    mVboLayout.setStaticTexCoords2d();
     createMesh();
     
     
@@ -479,7 +516,7 @@ void PixarDemo2012::update()
     
     mTime += 0.01f;
 
-    
+    mParticleController.update();
   
     if ( mFullScreen != isFullScreen() ) {
         setFullScreen(mFullScreen);
@@ -523,7 +560,7 @@ void PixarDemo2012::update()
         mCamera.setEyePoint(newPos);
         mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
         
-        mLerper = mLerper + 0.00001* getFrameRate();
+        mLerper = mLerper + 0.0000001* getFrameRate();
         if(mLerper >= 1.0)
         {
             mLerper = 0.0;

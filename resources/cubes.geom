@@ -6,6 +6,19 @@
 //uniform float size;
 uniform float mTime;
 
+varying vec4 coords;
+varying float outRand;
+varying vec4 outColor;
+
+//varying vec4 gl_FrontColorIn[];
+
+//varying vec3 v;
+float rand(vec2 n)
+{
+    return 0.5 + 0.5 *
+    fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
+}
+
 // Kernel
 void main(void)
 {
@@ -24,35 +37,65 @@ void main(void)
     );
     
     int cubeInds [36] = int[](
-        1,2,3, 3,4,1, 4,3,7, 7,8,4, 6,5,8, 8,7,6, 5,6,2, 2,1,5, 5,1,4, 4,8,5, 2,6,7, 7,3,2
-    );
-	// Iterate through vertices
-	for (int i = 0; i < gl_VerticesIn; i++)
-	{
-     
-        for (int j = 0; j < 12; j++) {
+        2,1,4, 4,2,3, 3,4,8, 8,3,7, 7,8,5, 5,7,6,
+        3,7,6, 6,3,2, 2,6,5, 5,2,1, 1,5,8, 8,1,4
+      );
+
+    //outColor = cubeColor;
+    
+    bool opt = true;
+
+    outRand = rand(gl_PositionIn[0].xy);
+    outColor = vec4(outRand,1.0,1.0,1.0);
+    
+    if (opt) {
+        for (int j = 0; j < 6; j++) {
+
+
+                        
+            int loc = j * 3;
+            // Point A
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[0+loc]-1],gl_PositionIn[0].w);
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
+            EmitVertex();
+            // Point B
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[1+loc]-1],gl_PositionIn[0].w);
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
+            EmitVertex();
+            // Point C
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[2+loc]-1],gl_PositionIn[0].w);
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
+            EmitVertex();
+
+        }
+        EndPrimitive();
+    }
+    if ( opt ) {
+        for (int j = 6; j < 12; j++) {
+            
             
             int loc = j * 3;
             // Point A
-            gl_Position = gl_PositionIn[i] + vec4(cubeVerts[cubeInds[0+loc]-1],gl_PositionIn[i].w);
-            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;            
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[0+loc]-1],gl_PositionIn[0].w);
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
             EmitVertex();
             // Point B
-            gl_Position = gl_PositionIn[i] + vec4(cubeVerts[cubeInds[1+loc]-1],gl_PositionIn[i].w);
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[1+loc]-1],gl_PositionIn[0].w);
             gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
             EmitVertex();
             // Point C
-            gl_Position = gl_PositionIn[i] + vec4(cubeVerts[cubeInds[2+loc]-1],gl_PositionIn[i].w);
-            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;            
+            gl_Position = gl_PositionIn[0] + vec4(cubeVerts[cubeInds[2+loc]-1],gl_PositionIn[0].w);
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Position;
+            
             EmitVertex();
-        
+
         }
-        
-	}
-    
-	// Close shape (implied -- this line is not necessary
-	// if you are only drawing one shape)
-	EndPrimitive();
-    
+        EndPrimitive();
+    }
 }
 

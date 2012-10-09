@@ -27,6 +27,7 @@
 		3B57E77D16234B61009A4615 /* axon.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77916234B61009A4615 /* axon.frag */; };
 		3B57E78116234B86009A4615 /* Tube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77F16234B86009A4615 /* Tube.cpp */; };
 		3B57E78216234B86009A4615 /* MindField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E78016234B86009A4615 /* MindField.cpp */; };
+		3BEF7351162385D7006B2A80 /* Calibri.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BEF7350162385D7006B2A80 /* Calibri.ttf */; };
 		3BFD2F1115FE37AC007734D8 /* ParticleController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD2F0F15FE37AC007734D8 /* ParticleController.cpp */; };
 		3BFD2F1215FE37AC007734D8 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD2F1015FE37AC007734D8 /* Particle.cpp */; };
 		43DFF4DB14F21C33004759F2 /* PixarDemo2012.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43DFF4DA14F21C33004759F2 /* PixarDemo2012.cpp */; };
@@ -67,6 +68,7 @@
 		3B57E78016234B86009A4615 /* MindField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MindField.cpp; path = ../src/MindField.cpp; sourceTree = "<group>"; };
 		3B57E78316234BC6009A4615 /* Tube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tube.h; path = ../include/Tube.h; sourceTree = "<group>"; };
 		3B57E78416234BC6009A4615 /* MindField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MindField.h; path = ../include/MindField.h; sourceTree = "<group>"; };
+		3BEF7350162385D7006B2A80 /* Calibri.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Calibri.ttf; sourceTree = "<group>"; };
 		3BFD2F0D15FE379F007734D8 /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = ../include/Particle.h; sourceTree = "<group>"; };
 		3BFD2F0E15FE379F007734D8 /* ParticleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleController.h; path = ../include/ParticleController.h; sourceTree = "<group>"; };
 		3BFD2F0F15FE37AC007734D8 /* ParticleController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleController.cpp; path = ../src/ParticleController.cpp; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3BEF7350162385D7006B2A80 /* Calibri.ttf */,
 				3B57E77616234B61009A4615 /* neuron.vert */,
 				3B57E77716234B61009A4615 /* neuron.frag */,
 				3B57E77816234B61009A4615 /* axon.vert */,
@@ -287,6 +290,7 @@
 				3B0506CD1620BE640070F0D5 /* diva.m4a in Resources */,
 				3B0506D01620BE640070F0D5 /* uv.jpg in Resources */,
 				3B0506D11620BE640070F0D5 /* uv.png in Resources */,
+				3BEF7351162385D7006B2A80 /* Calibri.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
