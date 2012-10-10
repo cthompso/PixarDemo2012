@@ -312,6 +312,14 @@ void PixarDemo2012::draw()
         theMindField.Render();
         gl::disableDepthRead();
         gl::disableDepthWrite();
+
+        if ( drawFPS ) {
+            gl::setMatricesWindow( getWindowSize(), true );
+            string mString;
+            mString = str(boost::format("Framerate: %f") % getAverageFps() );
+            gl::drawString( mString, Vec2f( 10.0f, 10.0f ), Color::white(), mFont );
+        }
+        
         return;
     }
 
@@ -430,7 +438,7 @@ void PixarDemo2012::setup()
     drawMindField   = false;
     drawFFT         = false;
     mFullScreen     = false;
-    drawFPS         = false;
+    drawFPS         = true;
     drawCubes       = true;
     
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
