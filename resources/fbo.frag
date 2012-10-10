@@ -101,13 +101,33 @@ float snoise(vec3 v)
 
 void main()
 {
+    float trans = mTime * 1.0;
+    float one = ( mod( trans, 8.0 ) );
+    float two = ( mod( (trans+1.0), 8.0 ) );
+    vec3 gradCol = vec3(1.0,0.0,0.0);
+    
+    vec3 colors[8];
+    colors[0] = vec3( 0.2, 0.8, 1.0 );
+    colors[1] = vec3( 0.8, 0.0, 1.0 );
+    colors[2] = vec3( 0.6, 0.8, 1.0 );
+    colors[3] = vec3( 1.0, 0.5, 1.0 );
+    colors[4] = vec3( 0.6, 4.0, 8.0 );
+    colors[5] = vec3( 0.8, 0.45, 1.0 );
+    colors[6] = vec3( 1.0, 0.4, 1.0 );
+    colors[7] = vec3( 0.7, 0.3, 5.0 );
+
+
+    float grad = smoothstep(0.0,1.0,mod(trans,1.0));
+
+    gradCol = mix(colors[ int(one) ],colors[ int(two) ],grad);
+    
     float scale = 0.0025;
-    vec3 nSpace = vec3(gl_FragCoord.x*scale,gl_FragCoord.y*scale,mTime*0.3);
+    vec3 nSpace = vec3(gl_FragCoord.x*scale,gl_FragCoord.y*scale,mTime*0.5);
     float val = (snoise(nSpace) + 1.0) * 0.5;
     float yscale = 1.0 - gl_FragCoord.y / resolution.y;
     val *= yscale * yscale;
 	vec3 fCol = vec3(val);
-	gl_FragColor.rgb = fCol * vec3(0.2,0.6,2.0);// * DiffuseColor;
+	gl_FragColor.rgb = fCol * gradCol;// * DiffuseColor;
 //	gl_FragColor.rgb = mNorm;
 //	gl_FragColor.rgb = vec3(1,0,0);
 	gl_FragColor.a = 1.0;

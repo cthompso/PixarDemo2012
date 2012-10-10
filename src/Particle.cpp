@@ -33,7 +33,7 @@ void Particle::draw()
     float b = 1.0f - (mAge/mDeath);
     ColorA myCol = ColorA(CM_HSV,fmod(mBirth,1.0f),1.0f,1.0f,1.0f*b);
     gl::color(myCol);
-	gl::drawSolidCircle( mLoc, mRadius );
+	gl::drawSolidCircle( mLoc, mRadius, 32 );
 }
 
 bool Particle::Dead() {

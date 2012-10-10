@@ -72,6 +72,7 @@ private:
     bool mFullScreen;
     bool drawMindField;
     bool drawFPS;
+    bool drawCubes;
     
     // FONT
     Font mFont;
@@ -129,6 +130,7 @@ void PixarDemo2012::keyDown( KeyEvent event )
     if ( event.getChar() == 'c' ) drawCairoFBO = !drawCairoFBO;
     if ( event.getChar() == 'f' ) drawFFT = !drawFFT;
     if ( event.getChar() == 't' ) drawFPS = !drawFPS;
+    if ( event.getChar() == 'v' ) drawCubes = !drawCubes;
     if ( event.getChar() == 'x' ) mFullScreen = !mFullScreen;
     if ( event.getChar() == 's' ) bindShaders();
 
@@ -193,7 +195,7 @@ void PixarDemo2012::createMesh()
 			//mVboIndices.push_back(x * mMeshLength + y);
 			//mVboTexCoords.push_back(Vec2f((float)x / (float)mMeshWidth, (float)y / (float)mMeshLength));
 			//Vec3f position((float)x - (float)mMeshWidth * 0.01f, (float)y - (float)mMeshLength * 0.01f, 0.0f);
-            mPerlin = Perlin(3,x);
+            mPerlin = Perlin(3,double(x));
 
             mPerlin.setSeed(1);
             double xx = mPerlin.fBm(randVec3f());
@@ -324,23 +326,27 @@ void PixarDemo2012::draw()
     gl::setMatrices( mCamera );
     
     // draw VBO
-    gl::enableDepthRead();
-    gl::enableDepthWrite();
-    gl::enable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    if ( drawCubes ) {
+        gl::enableDepthRead();
+        gl::enableDepthWrite();
+        gl::enable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
-    
-    gl::enableAlphaBlending();
-    
-    mCubesShader.bind();
-    mCubesShader.uniform("mTime", (float)mTime);
-    gl::draw( mVboMesh );
-    mCubesShader.unbind();
-    //gl::popMatrices();
+        
+        //gl::enableAlphaBlending();
+        
+        mCubesShader.bind();
+        mCubesShader.uniform("mTime", (float)mTime);
+        gl::draw( mVboMesh );
+        mCubesShader.unbind();
+        //gl::draw( mVboMesh );
+        
+        //gl::popMatrices();
 
-    gl::disable(GL_CULL_FACE);
-    gl::disableDepthRead();
-    gl::disableDepthWrite();
+        gl::disable(GL_CULL_FACE);
+        gl::disableDepthRead();
+        gl::disableDepthWrite();
+    }
     
     gl::setMatricesWindow( getWindowSize(), true );
     
@@ -425,12 +431,13 @@ void PixarDemo2012::setup()
     drawFFT         = false;
     mFullScreen     = false;
     drawFPS         = false;
+    drawCubes       = true;
     
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
     mLerper = 0.0f;
     
 	setFrameRate( 60.0f );
-	setWindowSize( 600, 600 );
+	setWindowSize( 1000, 600 );
 
     mFont = Font( loadResource("Calibri.ttf"), 18.0f );
     
