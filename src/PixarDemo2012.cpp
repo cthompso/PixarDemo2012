@@ -137,7 +137,8 @@ void PixarDemo2012::bindShaders()
     
     
     string mPath = getResourcePath().generic_string();
-    mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+    //mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+    mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string mVert = mPath + "/fbo.vert";
     string mFrag = mPath + "/fbo.frag";
     mGradientVertex = mVert.c_str();
@@ -170,7 +171,7 @@ void PixarDemo2012::bindShaders()
 void PixarDemo2012::renderGradientFBO()
 {
     gl::enableAlphaBlending();
-    
+
     gl::SaveFramebufferBinding bindingSaver;
     
     mGradientFBO.bindFramebuffer();
@@ -339,6 +340,7 @@ void PixarDemo2012::draw()
 
 		}
 
+        return;//
 		// Draw signals
         if ( drawFFT ) {
             gl::draw( freqLine );
@@ -376,7 +378,9 @@ void PixarDemo2012::setup()
     mLerper = 0.0f;
     
 	setFrameRate( 60.0f );
-	setWindowSize( 1000, 600 );
+    setWindowSize( 1000, 600 );
+   // setFullScreen(true);
+	
 
     mFont = Font( loadResource("Calibri.ttf"), 18.0f );
     
@@ -453,11 +457,15 @@ void PixarDemo2012::update()
 
     mParticleController.update();
   
+    /*
     if ( mFullScreen != isFullScreen() ) {
         setFullScreen(mFullScreen);
         mCamera.setAspectRatio(getWindowAspectRatio());
+        theMindField.mCamera.setAspectRatio(getWindowAspectRatio());
+        theCloth.mCamera.setAspectRatio(getWindowAspectRatio());
         mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
     }
+     */
     
 	// Check if track is playing and has a PCM buffer available
 	if ( mTrack->isPlaying() && mTrack->isPcmBuffering() ) {
@@ -487,7 +495,7 @@ void PixarDemo2012::update()
 	}
 
     if ( drawCloth ) {
-        theCloth.Update( mCamera );
+        theCloth.Update(  );
     } else {
         Vec3f pos = mCamera.getEyePoint();
         

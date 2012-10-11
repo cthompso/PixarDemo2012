@@ -13,6 +13,11 @@
 		00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */; };
 		00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B10FF439BC000DE1D7 /* AudioUnit.framework */; };
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
+		073B2F48162674FE00286E43 /* BulletCollision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 073B2F47162674FE00286E43 /* BulletCollision.framework */; };
+		07BCCDEB1626741F00038F6E /* BulletDynamics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BCCDE61626741F00038F6E /* BulletDynamics.framework */; };
+		07BCCDEC1626741F00038F6E /* BulletMultiThreaded.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BCCDE71626741F00038F6E /* BulletMultiThreaded.framework */; };
+		07BCCDED1626741F00038F6E /* BulletSoftBody.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BCCDE81626741F00038F6E /* BulletSoftBody.framework */; };
+		07BCCDEE1626741F00038F6E /* LinearMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BCCDE91626741F00038F6E /* LinearMath.framework */; };
 		3B0506CA1620BE640070F0D5 /* cubes.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B0506C21620BE640070F0D5 /* cubes.frag */; };
 		3B0506CB1620BE640070F0D5 /* cubes.geom in Sources */ = {isa = PBXBuildFile; fileRef = 3B0506C31620BE640070F0D5 /* cubes.geom */; };
 		3B0506CC1620BE640070F0D5 /* cubes.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B0506C41620BE640070F0D5 /* cubes.vert */; };
@@ -31,11 +36,6 @@
 		3B57E78116234B86009A4615 /* Tube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77F16234B86009A4615 /* Tube.cpp */; };
 		3B57E78216234B86009A4615 /* MindField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E78016234B86009A4615 /* MindField.cpp */; };
 		3BBCF4811625BA6A000510B2 /* Cubes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCF47F1625BA6A000510B2 /* Cubes.cpp */; };
-		3BEB7541162617D9007FBD46 /* BulletCollision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753C162617D9007FBD46 /* BulletCollision.framework */; };
-		3BEB7542162617D9007FBD46 /* BulletDynamics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753D162617D9007FBD46 /* BulletDynamics.framework */; };
-		3BEB7543162617D9007FBD46 /* BulletMultiThreaded.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753E162617D9007FBD46 /* BulletMultiThreaded.framework */; };
-		3BEB7544162617D9007FBD46 /* BulletSoftBody.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753F162617D9007FBD46 /* BulletSoftBody.framework */; };
-		3BEB7545162617D9007FBD46 /* LinearMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB7540162617D9007FBD46 /* LinearMath.framework */; };
 		3BEF7351162385D7006B2A80 /* Calibri.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BEF7350162385D7006B2A80 /* Calibri.ttf */; };
 		3BFD2F1115FE37AC007734D8 /* ParticleController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD2F0F15FE37AC007734D8 /* ParticleController.cpp */; };
 		3BFD2F1215FE37AC007734D8 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BFD2F1015FE37AC007734D8 /* Particle.cpp */; };
@@ -56,6 +56,11 @@
 		00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		00B784B10FF439BC000DE1D7 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		00B784B20FF439BC000DE1D7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		073B2F47162674FE00286E43 /* BulletCollision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BulletCollision.framework; sourceTree = "<group>"; };
+		07BCCDE61626741F00038F6E /* BulletDynamics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletDynamics.framework; path = /Library/Frameworks/BulletDynamics.framework; sourceTree = "<absolute>"; };
+		07BCCDE71626741F00038F6E /* BulletMultiThreaded.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletMultiThreaded.framework; path = /Library/Frameworks/BulletMultiThreaded.framework; sourceTree = "<absolute>"; };
+		07BCCDE81626741F00038F6E /* BulletSoftBody.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletSoftBody.framework; path = /Library/Frameworks/BulletSoftBody.framework; sourceTree = "<absolute>"; };
+		07BCCDE91626741F00038F6E /* LinearMath.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LinearMath.framework; path = /Library/Frameworks/LinearMath.framework; sourceTree = "<absolute>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -83,11 +88,6 @@
 		3B57E78416234BC6009A4615 /* MindField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MindField.h; path = ../include/MindField.h; sourceTree = "<group>"; };
 		3BBCF47D1625BA4C000510B2 /* Cubes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Cubes.h; path = ../include/Cubes.h; sourceTree = "<group>"; };
 		3BBCF47F1625BA6A000510B2 /* Cubes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cubes.cpp; path = ../src/Cubes.cpp; sourceTree = "<group>"; };
-		3BEB753C162617D9007FBD46 /* BulletCollision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletCollision.framework; path = ../../../../../../Library/Frameworks/BulletCollision.framework; sourceTree = "<group>"; };
-		3BEB753D162617D9007FBD46 /* BulletDynamics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletDynamics.framework; path = ../../../../../../Library/Frameworks/BulletDynamics.framework; sourceTree = "<group>"; };
-		3BEB753E162617D9007FBD46 /* BulletMultiThreaded.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletMultiThreaded.framework; path = ../../../../../../Library/Frameworks/BulletMultiThreaded.framework; sourceTree = "<group>"; };
-		3BEB753F162617D9007FBD46 /* BulletSoftBody.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletSoftBody.framework; path = ../../../../../../Library/Frameworks/BulletSoftBody.framework; sourceTree = "<group>"; };
-		3BEB7540162617D9007FBD46 /* LinearMath.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LinearMath.framework; path = ../../../../../../Library/Frameworks/LinearMath.framework; sourceTree = "<group>"; };
 		3BEF7350162385D7006B2A80 /* Calibri.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Calibri.ttf; sourceTree = "<group>"; };
 		3BFD2F0D15FE379F007734D8 /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Particle.h; path = ../include/Particle.h; sourceTree = "<group>"; };
 		3BFD2F0E15FE379F007734D8 /* ParticleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleController.h; path = ../include/ParticleController.h; sourceTree = "<group>"; };
@@ -124,11 +124,11 @@
 				00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */,
 				00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */,
 				00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */,
-				3BEB7541162617D9007FBD46 /* BulletCollision.framework in Frameworks */,
-				3BEB7542162617D9007FBD46 /* BulletDynamics.framework in Frameworks */,
-				3BEB7543162617D9007FBD46 /* BulletMultiThreaded.framework in Frameworks */,
-				3BEB7544162617D9007FBD46 /* BulletSoftBody.framework in Frameworks */,
-				3BEB7545162617D9007FBD46 /* LinearMath.framework in Frameworks */,
+				07BCCDEB1626741F00038F6E /* BulletDynamics.framework in Frameworks */,
+				07BCCDEC1626741F00038F6E /* BulletMultiThreaded.framework in Frameworks */,
+				07BCCDED1626741F00038F6E /* BulletSoftBody.framework in Frameworks */,
+				07BCCDEE1626741F00038F6E /* LinearMath.framework in Frameworks */,
+				073B2F48162674FE00286E43 /* BulletCollision.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,11 +164,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3BEB753C162617D9007FBD46 /* BulletCollision.framework */,
-				3BEB753D162617D9007FBD46 /* BulletDynamics.framework */,
-				3BEB753E162617D9007FBD46 /* BulletMultiThreaded.framework */,
-				3BEB753F162617D9007FBD46 /* BulletSoftBody.framework */,
-				3BEB7540162617D9007FBD46 /* LinearMath.framework */,
 				00B784AF0FF439BC000DE1D7 /* Accelerate.framework */,
 				00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */,
 				00B784B10FF439BC000DE1D7 /* AudioUnit.framework */,
@@ -255,6 +250,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				073B2F47162674FE00286E43 /* BulletCollision.framework */,
+				07BCCDE61626741F00038F6E /* BulletDynamics.framework */,
+				07BCCDE71626741F00038F6E /* BulletMultiThreaded.framework */,
+				07BCCDE81626741F00038F6E /* BulletSoftBody.framework */,
+				07BCCDE91626741F00038F6E /* LinearMath.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -367,6 +367,7 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -379,6 +380,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PixarDemo2012_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(CINDER_PATH)/boost",
+					"/Users/shalinkhyati/bullet-2.81/src/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -386,7 +391,7 @@
 					"-lcurl",
 				);
 				PRODUCT_NAME = PixarDemo2012;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -395,6 +400,7 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -408,6 +414,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PixarDemo2012_Prefix.pch;
 				GCC_UNROLL_LOOPS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(CINDER_PATH)/boost",
+					"/Users/shalinkhyati/bullet-2.81/src/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -415,7 +425,7 @@
 					"-lcurl",
 				);
 				PRODUCT_NAME = PixarDemo2012;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

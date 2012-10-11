@@ -141,5 +141,5 @@ void main()
     float yval =  abs(gl_TexCoord[0].t- 0.5);
     float dist = 2.0 * sqrt(xval*xval + yval * yval) - 0.2*(sin(0.01 * mTime) * 0.5 + 0.5);
   //  gl_FragColor.rgb = vec3(1.0 - dist, 0.0, 0.0);
-    gl_FragColor.a =  1.0 ;//- dist;
+    gl_FragColor.a =  1.0;// - dist;
 }
