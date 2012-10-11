@@ -55,7 +55,7 @@ public:
     
     void Init(float angle = 50.0f);
     void Shutdown();
-    void Update( CameraPersp& cullCam);
+    void Update( );
     void Render();
     void BuildMesh(btSoftBody* b);
     void AddBody();
@@ -81,6 +81,9 @@ public:
     float mTime;
     	AxisAlignedBox3f	mObjectBoundingBox;
     bool currentlyculled;
+
+        ci::CameraPersp				mCamera;
+    
 protected:
 	//! singleton instance
 	static Cloth *s_Cloth;

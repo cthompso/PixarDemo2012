@@ -12,6 +12,7 @@
 #include "cinder/Utilities.h"
 #include "cinder/Rand.h"
 
+#include "cinder/Camera.h"
 #include "Resources.h"
 
 using namespace ci::app;
@@ -247,6 +248,12 @@ MindField::~MindField()
 
 void MindField::Init()
 {
+    mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
+	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
+    
+    mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    mLerper = 0.0f;
+    
     kBXDiv = (kXHigh - kXLow)/ kBX;
     kBYDiv =  (kYHigh - kYLow)/ kBY;
     kBZDiv =  (kZHigh - kZLow)/ kBZ;
@@ -260,11 +267,24 @@ void MindField::Init()
     }
     
     UpdateAxons();
+    
+    gl::Fbo::Format format;
+	mSourceFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
+    mBlur1FBO = gl::Fbo( getWindowWidth()/2, getWindowHeight()/2, format);
+    mBlur2FBO = gl::Fbo( getWindowWidth()/2, getWindowHeight()/2, format);
+    mDepthFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
+    
+	
 
 }
 
 void MindField::Shutdown()
 {
+    mSourceFBO.reset();
+    mBlur1FBO.reset();
+    mBlur2FBO.reset();
+    mDepthFBO.reset();
+
     for(int i = 0; i < mNeurons.size(); i++)
     {
         mNeurons[i]->Shutdown();
@@ -287,6 +307,15 @@ void MindField::Shutdown()
 
 void MindField::Render()
 {
+    mSourceFBO.bindFramebuffer();
+    
+    gl::setViewport( mSourceFBO.getBounds() );
+    
+    gl::setMatricesWindow( getWindowSize(), true );
+    gl::setMatrices( mCamera );
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
+    gl::clear( ColorA(0.2f,0.2f,0.2f,1.0f) );
     
     // bind neuron shaders
     mNeuronShader.bind();
@@ -303,6 +332,20 @@ void MindField::Render()
         (*p)->Render();
     }
     mAxonShader.unbind();
+    
+    mSourceFBO.unbindFramebuffer();
+    
+    gl::popMatrices();
+    
+    
+    // draw FBO bg
+    gl::setMatricesWindow( getWindowSize(), true );
+    gl::color(1.0f,1.0f,1.0f);
+    //gl::draw( mSourceFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+    gl::draw( mSourceFBO.getDepthTexture(), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+    // reset camera for geometry
+    gl::popMatrices();
+    
 }
 
 void MindField::UpdateAxons()
@@ -467,6 +510,29 @@ void MindField::ClearBins()
 
 void MindField::Update()
 {
+    
+    //camera update
+    Vec3f pos = mCamera.getEyePoint();
+    
+    Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
+    mCamera.setEyePoint(newPos);
+    mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
+    
+    mLerper = mLerper + 0.0000001* getFrameRate();
+    if(mLerper >= 1.0)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    
+    if(pos.distance(mNextCamPoint) < 5)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    // end camera update
+    
+    
     for(int i = 0; i < mNeurons.size(); i++)
     {
         Neuron* n = mNeurons[i];
@@ -531,7 +597,8 @@ void MindField::bindShaders()
 {
     
     //string mPath = getResourcePath().generic_string();
-    string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+   // string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+     string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/neuron.vert";
     string nf = mPath + "/neuron.frag";
     mNeuronVert = nv.c_str();

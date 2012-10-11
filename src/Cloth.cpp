@@ -31,6 +31,9 @@ Cloth::~Cloth()
 
 void Cloth::Init(float angle)
 {
+    mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
+	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
+    
     currentlyculled = true;
 	mTime = 0.0;
 	collisionConfig=new btSoftBodyRigidBodyCollisionConfiguration();
@@ -43,7 +46,8 @@ void Cloth::Init(float angle)
 	
     AddBody();
     
-	//btTransform t;
+
+    //btTransform t;
 	//t.setIdentity();
 	//t.setOrigin(btVector3(0,0,0));
 	   
@@ -67,13 +71,10 @@ void Cloth::AddBody()
         
     softBody->m_cfg.kLF			=	0.05;
     softBody->m_cfg.kDG			=	0.006;
-  softBody->m_cfg.aeromodel	=	btSoftBody::eAeroModel::V_TwoSidedLiftDrag;
+    softBody->m_cfg.aeromodel	=	btSoftBody::eAeroModel::V_TwoSidedLiftDrag;
     
-  
-  
     // softBody->setWindVelocity(btVector3((randFloat() *2.0 - 1.0)* 10.0f, (randFloat()*2.0 - 1.0)* 4.0f, (randFloat()*2.0 - 1.0)* 5.0f));
 	//softBody->setMass(100,100);
- 
  
     //softBody->getCollisionShape()->setMargin(0.5);
     
@@ -81,16 +82,13 @@ void Cloth::AddBody()
     pm->m_flags				-=	btSoftBody::fMaterial::DebugDraw;
     softBody->m_materials[0]->m_kLST	=	0.4;
     
+  //  softBody->getCollisionShape()->setMargin(0.01);
+    
     softBody->m_cfg.collisions		|=	btSoftBody::fCollision::VF_SS;
     softBody->m_cfg.collisions		|=	btSoftBody::fCollision::CL_SELF;
     
-  /*  softBody->appendLink(0,1);
-	softBody->appendLink(1,2);
-	softBody->appendLink(2,3);
-	softBody->appendLink(3,0);
-	softBody->appendLink(0,2);*/
-//    softBody->randomizeConstraints();
- //   softBody->generateClusters(1);
+    //    softBody->randomizeConstraints();
+  // softBody->generateClusters(16);
     
     softBody->generateBendingConstraints(2,pm);
     
@@ -101,6 +99,18 @@ void Cloth::AddBody()
    // softBody->addForce(btVector3(0,2,0),0);
    // softBody->setWindVelocity(btVector3(1,3,-1));
     
+    //softBody->m_cfg.piterations=1;
+	//psb->generateClusters(128);
+//	softBody->generateClusters(16);
+	//psb->getCollisionShape()->setMargin(0.5);
+    
+
+	//softBody->m_cfg.collisions	=	btSoftBody::fCollision::CL_SS+	btSoftBody::fCollision::CL_RS
+    //+ btSoftBody::fCollision::CL_SELF
+    //;
+	//softBody->m_materials[0]->m_kLST=0.8;
+	
+    
    ResetTransform(softBody);
     
 	world->addSoftBody(softBody);	//cloth
@@ -109,14 +119,19 @@ void Cloth::AddBody()
 
 void Cloth::PreRoll()
 {
+
     for(int i = 0; i < 100; i ++)
+    {
         world->stepSimulation(1/60.0);
+    }
+
 }
 void Cloth::ResetTransform(btSoftBody* b)
 {
     btTransform		trs;
    // btQuaternion	rot;
     btVector3 pos = btVector3(5, 10, 8);
+//    btVector3 pos = btVector3(5, 3, 0);
     //rot.setRotation(btVector3(1, 0, 0), btScalar(SIMD_PI/2));
     trs.setIdentity();
     trs.setOrigin(pos);
@@ -174,21 +189,26 @@ void Cloth::BuildMesh(btSoftBody* b)
 }
 
 
-void Cloth::Update( CameraPersp& cullCam)
+
+
+void Cloth::Update( )
 {
     mTime = mTime + getFrameRate()/60.0f;
 
+
+    
     world->stepSimulation(1/60.0);
     for(int i=0;i<world->getSoftBodyArray().size();i++)
     {
         
         btSoftBody* b = world->getSoftBodyArray()[i];
-        BuildMesh(b);
+    //  BuildMesh(b);
         
         float xW = 0.23 * cos(mTime*0.02 );
         float yW = 0.5 * sin(mTime * 0.04 );
         float zW = 0.15* sin(mTime*0.01);
         b->setWindVelocity(btVector3(xW, yW, zW));
+        //b->setWindVelocity(btVector3(1.3, 3.9, 1.1));
         /*
         for(int i=0;i<b->m_faces.size();i++)
         {
@@ -197,11 +217,15 @@ void Cloth::Update( CameraPersp& cullCam)
         }
         */
        // b->addForce(btVector3(xW, yW, zW));
-        Vec3f camPos = cullCam.getCenterOfInterestPoint();
+       
+        
+        Vec3f camPos = mCamera.getCenterOfInterestPoint();
         Vec3f ps = mObjectBoundingBox.getCenter();
         camPos+=(ps-camPos)*0.05;
-        cullCam.setEyePoint( camPos + ((sin(mTime*0.001) *0.5+0.5) +0.5)* 15.0 * Vec3f(0.0,0.8,-1.0));
-        cullCam.setCenterOfInterestPoint( camPos);
+        mCamera.setEyePoint( camPos + ((sin(mTime*0.001) *0.5+0.5) +0.5)* 15.0 * Vec3f(0.0,0.8,-1.0));
+        mCamera.setCenterOfInterestPoint( camPos);
+        
+        
         /*
         //! perform frustum culling **********************************************************************************
         Frustumf visibleWorld( cullCam );
@@ -240,8 +264,13 @@ void Cloth::Render()
 //    gl::enable(GL_CULL_FACE);
 //    glCullFace(GL_BACK);
    // gl::disableAlphaTest();
+    
+    //gl::enableAlphaBlending();
+    gl::setMatrices( mCamera );
     for(int i=0;i<world->getSoftBodyArray().size();i++)
     {
+        btSoftBody* b = world->getSoftBodyArray()[i];
+        BuildMesh(b);
         if( mMesh.getNumTriangles() ) {
            mClothShader.bind();
             float what = mTime;
@@ -251,6 +280,7 @@ void Cloth::Render()
             mClothShader.unbind();
         }
     }
+    gl::popMatrices();
 }
 
 void Cloth::Shutdown()
@@ -273,8 +303,8 @@ void Cloth::bindShaders()
 {
     
     //string mPath = getResourcePath().generic_string();
-    string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
-//    string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
+    //string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+   string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/cloth.vert";
     string nf = mPath + "/cloth.frag";
     mClothVert = nv.c_str();
