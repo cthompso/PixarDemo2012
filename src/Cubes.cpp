@@ -26,6 +26,12 @@ Cubes::~Cubes()
 
 void Cubes::Init()
 {
+	cubesCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
+	cubesCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
+
+    mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    mLerper = 0.0f;
+
 	mVboLayout.setStaticPositions();
     
     CreateMesh();
@@ -103,6 +109,7 @@ void Cubes::BindShaders()
 }
 void Cubes::Render()
 {
+        gl::setMatrices( cubesCamera );
         gl::enableDepthRead();
         gl::enableDepthWrite();
         gl::enable(GL_CULL_FACE);
@@ -118,6 +125,26 @@ void Cubes::Render()
 void Cubes::Update()
 {
     cubeTimer += 0.1f;
+
+    Vec3f pos = cubesCamera.getEyePoint();
+    
+    Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
+    cubesCamera.setEyePoint(newPos);
+    cubesCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
+    
+    mLerper = mLerper + 0.0000001* getFrameRate();
+    if(mLerper >= 1.0)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    
+    if(pos.distance(mNextCamPoint) < 5)
+    {
+        mLerper = 0.0;
+        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+    }
+    
 }
 void Cubes::Shutdown()
 {

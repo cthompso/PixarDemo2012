@@ -24,6 +24,10 @@
 		3B18126D16260F8D00CCC23F /* cloth.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B18126B16260F8D00CCC23F /* cloth.frag */; };
 		3B18126E16260F8D00CCC23F /* cloth.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B18126C16260F8D00CCC23F /* cloth.vert */; };
 		3B18127116260F9B00CCC23F /* Cloth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B18127016260F9B00CCC23F /* Cloth.cpp */; };
+		3B21292416272E53006D217B /* Branch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292216272E53006D217B /* Branch.cpp */; };
+		3B21292516272E53006D217B /* BranchController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292316272E53006D217B /* BranchController.cpp */; };
+		3B32F3DF1626972B000D924D /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B32F3DE1626972B000D924D /* logo.png */; };
+		3B32F3E316270DBB000D924D /* Title.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B32F3E216270DBB000D924D /* Title.cpp */; };
 		3B57E77A16234B61009A4615 /* neuron.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77616234B61009A4615 /* neuron.vert */; };
 		3B57E77B16234B61009A4615 /* neuron.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77716234B61009A4615 /* neuron.frag */; };
 		3B57E77C16234B61009A4615 /* axon.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77816234B61009A4615 /* axon.vert */; };
@@ -73,6 +77,13 @@
 		3B18126C16260F8D00CCC23F /* cloth.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cloth.vert; sourceTree = "<group>"; };
 		3B18127016260F9B00CCC23F /* Cloth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cloth.cpp; path = ../src/Cloth.cpp; sourceTree = "<group>"; };
 		3B18127216260FA800CCC23F /* Cloth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cloth.h; path = ../include/Cloth.h; sourceTree = "<group>"; };
+		3B21291F16272E4A006D217B /* Branch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Branch.h; path = ../include/Branch.h; sourceTree = "<group>"; };
+		3B21292016272E4A006D217B /* BranchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BranchController.h; path = ../include/BranchController.h; sourceTree = "<group>"; };
+		3B21292216272E53006D217B /* Branch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Branch.cpp; path = ../src/Branch.cpp; sourceTree = "<group>"; };
+		3B21292316272E53006D217B /* BranchController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BranchController.cpp; path = ../src/BranchController.cpp; sourceTree = "<group>"; };
+		3B32F3DE1626972B000D924D /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		3B32F3E116270D8C000D924D /* Title.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Title.h; path = ../include/Title.h; sourceTree = "<group>"; };
+		3B32F3E216270DBB000D924D /* Title.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Title.cpp; path = ../src/Title.cpp; sourceTree = "<group>"; };
 		3B57E77616234B61009A4615 /* neuron.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = neuron.vert; sourceTree = "<group>"; };
 		3B57E77716234B61009A4615 /* neuron.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = neuron.frag; sourceTree = "<group>"; };
 		3B57E77816234B61009A4615 /* axon.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = axon.vert; sourceTree = "<group>"; };
@@ -149,6 +160,9 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				3B21292216272E53006D217B /* Branch.cpp */,
+				3B21292316272E53006D217B /* BranchController.cpp */,
+				3B32F3E216270DBB000D924D /* Title.cpp */,
 				3B18127016260F9B00CCC23F /* Cloth.cpp */,
 				3BBCF47F1625BA6A000510B2 /* Cubes.cpp */,
 				3B57E77F16234B86009A4615 /* Tube.cpp */,
@@ -216,6 +230,9 @@
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				3B21291F16272E4A006D217B /* Branch.h */,
+				3B21292016272E4A006D217B /* BranchController.h */,
+				3B32F3E116270D8C000D924D /* Title.h */,
 				3B18127216260FA800CCC23F /* Cloth.h */,
 				3BBCF47D1625BA4C000510B2 /* Cubes.h */,
 				3B57E78316234BC6009A4615 /* Tube.h */,
@@ -231,6 +248,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3B32F3DE1626972B000D924D /* logo.png */,
 				3B18126B16260F8D00CCC23F /* cloth.frag */,
 				3B18126C16260F8D00CCC23F /* cloth.vert */,
 				3BEF7350162385D7006B2A80 /* Calibri.ttf */,
@@ -327,6 +345,7 @@
 				3B0506D01620BE640070F0D5 /* uv.jpg in Resources */,
 				3B0506D11620BE640070F0D5 /* uv.png in Resources */,
 				3BEF7351162385D7006B2A80 /* Calibri.ttf in Resources */,
+				3B32F3DF1626972B000D924D /* logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +377,9 @@
 				3B18126D16260F8D00CCC23F /* cloth.frag in Sources */,
 				3B18126E16260F8D00CCC23F /* cloth.vert in Sources */,
 				3B18127116260F9B00CCC23F /* Cloth.cpp in Sources */,
+				3B32F3E316270DBB000D924D /* Title.cpp in Sources */,
+				3B21292416272E53006D217B /* Branch.cpp in Sources */,
+				3B21292516272E53006D217B /* BranchController.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

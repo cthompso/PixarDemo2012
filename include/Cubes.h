@@ -15,6 +15,7 @@
 
 #include "Resources.h"
 
+#include "cinder/Camera.h"
 #include "cinder/gl/Vbo.h"
 #include "cinder/Rand.h"
 #include "cinder/Perlin.h"
@@ -39,6 +40,8 @@ public:
 		return *s_Cubes;
 	};
 
+    ci::CameraPersp	cubesCamera;
+    
     void Init();
     void CreateMesh();
     void Render();
@@ -54,6 +57,11 @@ protected:
     
 private:
 
+
+    Vec3f mNextCamPoint;
+    float mLerper;
+    
+    
 	ci::gl::VboMesh::Layout mVboLayout;
 	std::vector<ci::Vec3f> mVboVertices;
 	ci::gl::VboMesh	mVboMesh;

@@ -54,8 +54,8 @@ void Cloth::AddBody()
     float s=8;
     float t = 16;
 	float h= 6;
-    int res_x = 60;
-    int res_y = 60;
+    int res_x = 30;
+    int res_y = 30;
     tex_coords = new float[ (res_x - 1)*(res_y -1)*12 ];
 	btSoftBody* softBody=btSoftBodyHelpers::CreatePatchUV(
                                                         world->getWorldInfo(),btVector3(-s,h,-t),btVector3(s,h,-t),

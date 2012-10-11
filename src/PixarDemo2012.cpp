@@ -19,15 +19,13 @@
 #include "KissFFT.h"
 
 #include "cinder/Path2d.h"
-#include "cinder/cairo/Cairo.h"
-#include "cinder/Perlin.h"
 
 #include "ParticleController.h"
 #include "Particle.h"
 
 #include "cinder/Rand.h"
 
-
+#include "Title.h"
 #include "MindField.h"
 #include "Cubes.h"
 #include "Cloth.h"
@@ -52,6 +50,7 @@ public:
 	void renderGradientFBO();
     void renderCairoFBO();
     void bindShaders();
+    void generateWaveforms();
     
 private:
 
@@ -67,6 +66,7 @@ private:
     ParticleController          mParticleController;
     
     double mTime;
+    bool drawTitle;
     bool drawScreenUV;
     bool drawCairoFBO;
     bool drawFFT;
@@ -75,18 +75,19 @@ private:
     bool drawFPS;
     bool drawCubes;
     bool drawCloth;
+
+    //balls and music stuff
+    float makeBall;
+    
     
     // FONT
     Font mFont;
     
     ci::CameraPersp				mCamera;
     
-    //uv texture billboard
-	gl::Texture mTexture;
-    
     //cairo billboard
 	Perlin mPerlin;
-    cairo::SurfaceImage mySurface;
+
     
     //noise billboard
 	gl::Fbo mGradientFBO;
@@ -195,160 +196,55 @@ void PixarDemo2012::renderGradientFBO()
     gl::popMatrices();
 }
 
-void PixarDemo2012::renderCairoFBO() {
-    
-    mPerlin = Perlin(10);
-    
-    float numBalls = 10.0f + (mTime * 30.0f);
-    float step = sqrt( (float(getWindowWidth()) * float(getWindowHeight())) / numBalls ) ;
-    float halfStep = step / 2.0f;
-    Color ballColor = Color(1.0f,1.0f,1.0f);
-    cairo::Context ctx(mySurface);
-    
-    //clear out background
-    ctx.setSourceRgba(0.0, 0.0, 0.0, 0.0);
-    ctx.setOperator(0); //clear operator
-    ctx.rectangle(getWindowBounds());
-    ctx.fill();
-    ctx.setOperator(2); //over operator
-    
-    //draw circles to screen grid
-    mPerlin.setSeed(1.0f);
-    float noiseVal = 0.0f;
-    for ( float curY = 0.0f; curY < getWindowHeight() - step; curY += step) {
-        for ( float curX = 0.0f; curX < getWindowWidth() - step; curX += step) {
-            noiseVal += (mPerlin.fBm(((curY*1.0f)+(curX*0.005f))) + 1.0f) * 0.5f;
-            ballColor.set(CM_HSV,Vec3f(fmod(noiseVal*0.4f,1.0f),
-                                       1.0f,
-                                       1.0f));
-            //                printf("noiseVal: %f\n",noiseVal);
-            ctx.setSourceRgba(ballColor.r, ballColor.g, ballColor.b, 1.0f);
-            ctx.circle(curX+halfStep,curY+halfStep,halfStep);
-            ctx.fill();
-        }
-    }
-    
-    
-    gl::Texture cairoTexture(mySurface.getSurface());
-    cairoTexture.enableAndBind();
-    gl::drawSolidRect(getWindowBounds());
-    cairoTexture.unbind();
-    
-}
 
 // Draw
 void PixarDemo2012::draw()
 {
     //render Gradient FBO
     renderGradientFBO();
-    
-	// clear out the window with black
-	// Set up window
+
     gl::setViewport( getWindowBounds() );
-	gl::setMatrices( mCamera );
-	gl::clear( ColorAf::gray( 0.2f ) );
+    gl::setMatricesWindow( getWindowSize(), true );
+
+    gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );    
     
+    // draw FBO bg
+    gl::color(1.0f,1.0f,1.0f);
+    gl::draw( mGradientFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+    
+    if ( drawTitle ) {
+        if ( mTime > 100.0f ) drawTitle = false;
+        theTitle.Render();
+    }
+
     if ( drawMindField ) {
     	gl::enableDepthRead();
         gl::enableDepthWrite();
         theMindField.Render();
         gl::disableDepthRead();
-        gl::disableDepthWrite();
-
-        if ( drawFPS ) {
-            gl::setMatricesWindow( getWindowSize(), true );
-            string mString;
-            mString = str(boost::format("Framerate: %f") % getAverageFps() );
-            gl::drawString( mString, Vec2f( 10.0f, 10.0f ), Color::white(), mFont );
-        }
-        
+        gl::disableDepthWrite();        
         return;
     }
-
-    // draw FBO bg
-    gl::setMatricesWindow( getWindowSize(), true );
-    gl::color(1.0f,1.0f,1.0f);
-    gl::draw( mGradientFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
-    
-    // reset camera for geometry
-    gl::popMatrices();
-    
-    gl::setMatrices( mCamera );
     if ( drawCubes ) {
+        gl::popMatrices();
+        gl::setMatrices( theCubes.cubesCamera );
         theCubes.Render();
-    }
+    }    
     if ( drawCloth ) {
     	gl::enableDepthRead();
         gl::enableDepthWrite();
         theCloth.Render();
         gl::disableDepthRead();
         gl::disableDepthWrite();
-
     }
     
+    // FFT stuff
+    generateWaveforms();
+    
+    // Balls
     gl::setMatricesWindow( getWindowSize(), true );
-    
-    // draw UV texture billboard
-    if ( drawScreenUV ) {
-        gl::color(1.0f, 1.0f, 1.0f,0.5f);
-        mTexture.enableAndBind();
-        gl::drawSolidRect(getWindowBounds());
-        mTexture.unbind();
-    }
-    
-    // draw Cairo context
-    if ( drawCairoFBO ) {
-        gl::color(1.0f, 1.0f, 1.0f,1.0f);
-        renderCairoFBO();
-    }
-
-    // DRAW MEM SPEHRES AND WAVEFORMS
-	// Check init flag
-	if ( mFft ) {
-
-		// Get data in the frequency (transformed) and time domains
-		float * freqData = mFft->getAmplitude();
-		float * timeData = mFft->getData();
-		int32_t dataSize = mFft->getBinSize();
-
-		// Cast data size to float
-		float dataSizef = (float)dataSize;
-
-		// Get dimensions
-		float scale = ( (float)getWindowWidth() - 20.0f ) / dataSizef;
-		float windowHeight = (float)getWindowHeight();
-
-		// Use polylines to depict time and frequency domains
-		PolyLine<Vec2f> freqLine;
-		PolyLine<Vec2f> timeLine;
-
-        float make = 0.0f;
-		// Iterate through data
-		for ( int32_t i = 0; i < dataSize; i++ ) {
-
-			// Do logarithmic plotting for frequency domain
-			float logSize = math<float>::log( dataSizef );
-			float x = (float)( ( math<float>::log( (float)i ) / logSize ) * dataSizef );
-			float y = math<float>::clamp( freqData[ i ] * ( x / dataSizef ) * ( math<float>::log( ( dataSizef - (float)i ) ) ), 0.0f, 2.0f );
-            
-            if (y > make) make = y;
-
-			// Plot points on lines for tme domain
-			freqLine.push_back( Vec2f(        x * scale + 10.0f,            -y * ( windowHeight - 20.0f ) * 1.75f + ( windowHeight - 10.0f ) ) );
-			timeLine.push_back( Vec2f( (float)i * scale + 10.0f, timeData[ i ] * ( windowHeight - 20.0f ) * 0.25f + ( windowHeight * 0.25f + 10.0f ) ) );
-
-		}
-
-		// Draw signals
-        if ( drawFFT ) {
-            gl::draw( freqLine );
-            gl::draw( timeLine );
-        }
-        gl::color(1.0f, 1.0f, 1.0f);
-        if (make > 0.075f) mParticleController.addParticles(1,make*100.0f,mTime);
-        mParticleController.draw();
-
-	}
+    if (makeBall > 0.075f) mParticleController.addParticles(1,makeBall*100.0f,mTime);
+    mParticleController.draw();
     
     if ( drawFPS ) {
         string mString;
@@ -357,81 +253,104 @@ void PixarDemo2012::draw()
     }
 }
 
+void PixarDemo2012::generateWaveforms()
+{
+    // DRAW MEM SPEHRES AND WAVEFORMS
+	// Check init flag
+	if ( mFft ) {
+        
+		// Get data in the frequency (transformed) and time domains
+		float * freqData = mFft->getAmplitude();
+		float * timeData = mFft->getData();
+		int32_t dataSize = mFft->getBinSize();
+        
+		// Cast data size to float
+		float dataSizef = (float)dataSize;
+        
+		// Get dimensions
+		float scale = ( (float)getWindowWidth() - 20.0f ) / dataSizef;
+		float windowHeight = (float)getWindowHeight();
+        
+		// Use polylines to depict time and frequency domains
+		PolyLine<Vec2f> freqLine;
+		PolyLine<Vec2f> timeLine;
+        
+        makeBall = 0.0f;
+		// Iterate through data
+		for ( int32_t i = 0; i < dataSize; i++ ) {
+            
+			// Do logarithmic plotting for frequency domain
+			float logSize = math<float>::log( dataSizef );
+			float x = (float)( ( math<float>::log( (float)i ) / logSize ) * dataSizef );
+			float y = math<float>::clamp( freqData[ i ] * ( x / dataSizef ) * ( math<float>::log( ( dataSizef - (float)i ) ) ), 0.0f, 2.0f );
+            
+            if (y > makeBall) makeBall = y;
+            
+			// Plot points on lines for tme domain
+			freqLine.push_back( Vec2f(        x * scale + 10.0f,            -y * ( windowHeight - 20.0f ) * 1.75f + ( windowHeight - 10.0f ) ) );
+			timeLine.push_back( Vec2f( (float)i * scale + 10.0f, timeData[ i ] * ( windowHeight - 20.0f ) * 0.25f + ( windowHeight * 0.25f + 10.0f ) ) );
+            
+		}
+        
+		// Draw signals
+        if ( drawFFT ) {
+            gl::draw( freqLine );
+            gl::draw( timeLine );
+        }
+        
+	}
+    
+}
+
 // Set up
 void PixarDemo2012::setup()
 {
 
     // BASIC SETUP
     mTime           = 0.0f;
-    drawScreenUV    = false;
-    drawCairoFBO    = false;
+    drawTitle       = true;
+    drawScreenUV    = true;
+    drawCairoFBO    = true;
     drawMindField   = false;
     drawFFT         = false;
     mFullScreen     = false;
     drawFPS         = true;
     drawCubes       = false;
-    drawCloth       = true;
-    
-    mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
-    mLerper = 0.0f;
+    drawCloth       = false;
     
 	setFrameRate( 60.0f );
 	setWindowSize( 1000, 600 );
 
     mFont = Font( loadResource("Calibri.ttf"), 18.0f );
     
-	// RENDER PREFS
-	//gl::enable( GL_LINE_SMOOTH );
-	//glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-	gl::color( ColorAf::white() );
-    //    gl::enable( GL_POLYGON_SMOOTH );
-    //	glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
-    //	gl::enable( GL_NORMALIZE );
-    //	gl::enableAlphaBlending();
-	
 	// LOAD AUDIO
-	mAudioSource = audio::load( loadResource("diva.m4a") );//RES_SAMPLE ) );
+	mAudioSource = audio::load( loadResource("diva.m4a") );
 	mTrack = audio::Output::addTrack( mAudioSource, false );
 	mTrack->enablePcmBuffering( true );
 	mTrack->play();
     
+    // SHADERS
+    bindShaders();
     
     // PARTICLES
 	mParticleController = ParticleController();
 
-    // VBO SETUP
-    //	mVboLayout.setStaticIndices();
-    theCubes.Init();
-    
     // FBOs
 	gl::Fbo::Format format;
 	mGradientFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
-    mTexture = loadImage( loadResource("uv.png") );
+
+    // SCENES
+    theCubes.Init();
     
-    // SHADERS
-    bindShaders();
-    
-    
-	// CAMERA
-	mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
-	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
-    
-    //mCamera.setEyePoint(Vec3f(10.0, 10.0, -10.0));
-    //mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
-    
-    //CAIRO
-    mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
+    theTitle.Init();
     
     theMindField.Init();
     
     theCloth.Init();
-
 }
 
-// Called on exit
 void PixarDemo2012::shutdown() 
 {
-
 	// Stop track
 	mTrack->enablePcmBuffering( false );
 	mTrack->stop();
@@ -439,13 +358,12 @@ void PixarDemo2012::shutdown()
 		mFft->stop();
 	}
 
+    theTitle.Shutdown();
     theCloth.Shutdown();
     theCubes.Shutdown();
-    theMindField.Shutdown();
-    
+    theMindField.Shutdown();    
 }
 
-// Runs update logic
 void PixarDemo2012::update()
 {
     
@@ -453,10 +371,20 @@ void PixarDemo2012::update()
 
     mParticleController.update();
   
-    if ( mFullScreen != isFullScreen() ) {
-        setFullScreen(mFullScreen);
-        mCamera.setAspectRatio(getWindowAspectRatio());
-        mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
+    if ( drawTitle ) {
+        theTitle.Update();
+    }
+    
+    if ( drawCloth ) {
+        theCloth.Update( mCamera );
+    }
+    
+    if ( drawCubes ) {
+        theCubes.Update();
+    }
+    
+    if ( drawMindField ) {
+        theMindField.Update();
     }
     
 	// Check if track is playing and has a PCM buffer available
@@ -486,36 +414,6 @@ void PixarDemo2012::update()
 
 	}
 
-    if ( drawCloth ) {
-        theCloth.Update( mCamera );
-    } else {
-        Vec3f pos = mCamera.getEyePoint();
-        
-        Vec3f newPos = pos.lerp(mLerper, mNextCamPoint);
-        mCamera.setEyePoint(newPos);
-        mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
-        
-        mLerper = mLerper + 0.0000001* getFrameRate();
-        if(mLerper >= 1.0)
-        {
-            mLerper = 0.0;
-            mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
-        }
-        
-        if(pos.distance(mNextCamPoint) < 5)
-        {
-            mLerper = 0.0;
-            mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
-        }
-    }
-    
-    if ( drawCubes ) {
-        theCubes.Update();
-    }
-    
-    if ( drawMindField ) {
-        theMindField.Update();
-    }    
 }
 
 // Start application
