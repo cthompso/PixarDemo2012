@@ -5,6 +5,7 @@
 //uniform float rotation;
 //uniform float size;
 uniform float mTime;
+uniform float mGlow;
 uniform vec3 camPos;
 
 varying vec4 coords;

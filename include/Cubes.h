@@ -60,7 +60,7 @@ private:
 
     Vec3f mNextCamPoint;
     float mLerper;
-    
+    float amt;
     
 	ci::gl::VboMesh::Layout mVboLayout;
 	std::vector<ci::Vec3f> mVboVertices;

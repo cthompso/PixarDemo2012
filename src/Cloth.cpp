@@ -31,6 +31,7 @@ Cloth::~Cloth()
 
 void Cloth::Init(float angle)
 {
+    fctr = 0;
     mNoiseTime = 0.0;
     mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
 	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
@@ -59,16 +60,16 @@ void Cloth::AddBody()
     float s=8;
     float t = 16;
 	float h= 6;
-    int res_x = 60;
-    int res_y = 60;
+    int res_x = 30;//60
+    int res_y = 30;//60
     tex_coords = new float[ (res_x - 1)*(res_y -1)*12 ];
 	btSoftBody* softBody=btSoftBodyHelpers::CreatePatchUV(
                                                         world->getWorldInfo(),btVector3(-s,h,-t),btVector3(s,h,-t),
                                                         btVector3(-s,h,t),btVector3(s,h,t),res_x,res_y,0,true, tex_coords);
 
-	softBody->m_cfg.viterations=20;
-	softBody->m_cfg.piterations=8;
-	softBody->setTotalMass(0.1);
+	softBody->m_cfg.viterations=10;//20
+	softBody->m_cfg.piterations=4;//8
+	softBody->setTotalMass(0.095);
         
     softBody->m_cfg.kLF			=	0.05;
     softBody->m_cfg.kDG			=	0.006;
@@ -197,13 +198,21 @@ void Cloth::Update( )
     mTime = mTime + getFrameRate()/60.0f;
     mNoiseTime = mNoiseTime + 0.01;
 
-    
+
     world->stepSimulation(1/60.0);
+    fctr = fctr + 1;
     for(int i=0;i<world->getSoftBodyArray().size();i++)
     {
         
+        
         btSoftBody* b = world->getSoftBodyArray()[i];
-    //  BuildMesh(b);
+        
+        //b->setTotalMass(0.095 + abs(sin(mTime*0.001)*0.001));
+        
+        //if(fctr %2 == 0)
+        //{
+            BuildMesh(b);
+        //}
        
         float xW = 0.23 * cos(mTime*0.02 );
         float yW = 0.5 * sin(mTime * 0.04 );
@@ -227,7 +236,7 @@ void Cloth::Update( )
         Vec3f camPos = mCamera.getCenterOfInterestPoint();
         Vec3f ps = mObjectBoundingBox.getCenter();
         camPos+=(ps-camPos)*0.05;
-        mCamera.setEyePoint( camPos + ((sin(mTime*0.001) *0.5+0.5) +0.5)* 15.0 * Vec3f(0.0,0.8,-1.0));
+        mCamera.setEyePoint( camPos + ((sin(mTime*0.001) *0.5+0.5) +0.5)* 15.0 * Vec3f((cos(mTime*0.001)),sin(mTime*0.002),-1.0));
         mCamera.setCenterOfInterestPoint( camPos);
         
         
@@ -281,7 +290,7 @@ void Cloth::Render()
     gl::drawSolidRect( Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
     mBGShader.unbind();
     
-    gl::popMatrices();
+    //gl::popMatrices();
 
     
     gl::enable(GL_CULL_FACE);
@@ -295,7 +304,7 @@ void Cloth::Render()
     for(int i=0;i<world->getSoftBodyArray().size();i++)
     {
         btSoftBody* b = world->getSoftBodyArray()[i];
-        BuildMesh(b);
+        
         if( mMesh.getNumTriangles() ) {
            mClothShader.bind();
             float what = mTime;

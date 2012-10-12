@@ -404,7 +404,7 @@ void MindField::Render()
    // glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
  // gl::clear( ColorA(0.2f,0.2f,0.2f,1.0f) );
-     gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
+    gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
     gl::setMatrices( mCamera );
     
     

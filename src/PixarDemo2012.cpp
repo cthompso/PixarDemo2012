@@ -38,6 +38,14 @@ using namespace std;
 class PixarDemo2012 : public ci::app::AppBasic
 {
 
+    enum tSequences {
+        kTitle = 0,
+        kCircles,
+        kCubes,
+        kCloth,
+        kMindField,
+        kMaxSeq,
+    };
 public:
 
 	void draw();
@@ -51,6 +59,10 @@ public:
     void renderCairoFBO();
     void bindShaders();
     void generateWaveforms();
+    
+    void SetSeq();
+    void NextSeq();
+    void drawFader();
     
 private:
 
@@ -107,6 +119,15 @@ private:
     Vec3f mNextCamPoint;
     float mLerper;
     
+    int mCurrSeq;
+    
+    float mFadeVal;
+    bool doFade;
+    bool mFadeDir;
+    
+    std::vector<float> mCuts;
+    int mCurrentCut;
+    bool mAutoCut;
   };
 
 // MOUSE & KEY CONTROL
@@ -124,7 +145,75 @@ void PixarDemo2012::keyDown( KeyEvent event )
     if ( event.getChar() == 'b' ) drawCloth = !drawCloth;
     if ( event.getChar() == 'x' ) mFullScreen = !mFullScreen;
     if ( event.getChar() == 's' ) bindShaders();
+    if ( event.getChar() == 'n' ) {doFade = true;printf("%f\n",mTime);}
 
+}
+
+void PixarDemo2012::NextSeq()
+{
+    mCurrSeq = mCurrSeq + 1;
+    if(mCurrSeq == kMaxSeq)
+    {
+        mCurrSeq = 1; // skip title
+    }
+    SetSeq();
+    
+}
+
+void PixarDemo2012::SetSeq()
+{
+    drawScreenUV = false;
+    
+    if(mCurrSeq == kTitle)
+    {
+        drawTitle       = true;
+        drawScreenUV    = true;
+        drawCairoFBO    = true;
+        drawMindField   = false;
+        drawFFT         = false;
+        drawCubes       = false;
+        drawCloth       = false;
+    }
+    else if(mCurrSeq == kCircles)
+    {
+        drawTitle       = false;
+        drawScreenUV    = true;
+        drawCairoFBO    = true;
+        drawMindField   = false;
+        drawFFT         = false;
+        drawCubes       = false;
+        drawCloth       = false;
+    }
+    else if(mCurrSeq == kCubes)
+    {
+        drawTitle       = false;
+        drawScreenUV    = true;
+        drawCairoFBO    = true;
+        drawMindField   = false;
+        drawFFT         = false;
+        drawCubes       = true;
+        drawCloth       = false;
+    }
+    else if(mCurrSeq == kCloth)
+    {
+        drawTitle       = false;
+        drawScreenUV    = false;
+        drawCairoFBO    = false;
+        drawMindField   = false;
+        drawFFT         = false;
+        drawCubes       = false;
+        drawCloth       = true;
+    }
+    else if(mCurrSeq == kMindField)
+    {
+        drawTitle       = false;
+        drawScreenUV    = false;
+        drawCairoFBO    = false;
+        drawMindField   = true;
+        drawFFT         = false;
+        drawCubes       = false;
+        drawCloth       = false;
+    }
 }
 
 void PixarDemo2012::bindShaders()
@@ -199,6 +288,9 @@ void PixarDemo2012::renderGradientFBO()
 // Draw
 void PixarDemo2012::draw()
 {
+
+    gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
+   
     //render Gradient FBO
     if(!drawMindField && !drawCloth)
     {
@@ -208,7 +300,7 @@ void PixarDemo2012::draw()
     gl::setViewport( getWindowBounds() );
     gl::setMatricesWindow( getWindowSize(), true );
 
-    gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );    
+    gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
     
     // draw FBO bg
     gl::color(1.0f,1.0f,1.0f);
@@ -225,6 +317,7 @@ void PixarDemo2012::draw()
     
     if ( drawMindField ) {
         theMindField.Render();
+        drawFader();
         return;
     }
     if ( drawCubes ) {
@@ -235,6 +328,7 @@ void PixarDemo2012::draw()
     if ( drawCloth ) {
 
         theCloth.Render();
+        drawFader();
         return;
     }
     
@@ -248,6 +342,41 @@ void PixarDemo2012::draw()
         string mString;
         mString = str(boost::format("FRAMERATE: %f") % getAverageFps() );
         gl::drawString( mString, Vec2f( 10.0f, 10.0f ), Color::white(), mFont );
+    }
+    
+    drawFader();
+
+}
+
+void PixarDemo2012::drawFader()
+{
+    gl::setViewport( getWindowBounds() );
+    gl::setMatricesWindow( getWindowSize(), true );
+    
+    if(doFade)
+    {
+        glColor4f(0,0,0,mFadeVal);
+        gl::drawSolidRect(getWindowBounds());
+        if(mFadeDir)
+        {
+            mFadeVal = mFadeVal + getFrameRate() * 0.0001;
+        }
+        else
+        {
+            mFadeVal = mFadeVal - getFrameRate() * 0.0001;
+        }
+        if(mFadeVal > 1.0)
+        {
+            mFadeVal = 1.0;
+            NextSeq();
+            mFadeDir = !mFadeDir;
+        }
+        if(mFadeVal < 0.0)
+        {
+            mFadeVal = 0.0;
+            mFadeDir = !mFadeDir;
+            doFade = false;
+        }
     }
 }
 
@@ -333,7 +462,7 @@ setWindowSize( 1000, 600 );
 	mAudioSource = audio::load( loadResource("diva.m4a") );
 	mTrack = audio::Output::addTrack( mAudioSource, false );
 	mTrack->enablePcmBuffering( true );
-//    mTrack->play();
+    mTrack->play();
     
     // SHADERS
     bindShaders();
@@ -345,6 +474,26 @@ setWindowSize( 1000, 600 );
 	gl::Fbo::Format format;
 	mGradientFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
 
+    mCurrSeq = kTitle;
+    SetSeq();
+    doFade = false;
+    mFadeVal = 0.0f;
+    mFadeDir = true;
+    
+    mCurrentCut = 0;
+
+    mCuts.push_back(4.0); // title
+    mCuts.push_back(mCuts[mCuts.size()-1]+13.0); // balls
+    mCuts.push_back(mCuts[mCuts.size()-1]+15.0); // cubes
+    mCuts.push_back(mCuts[mCuts.size()-1]+20.0); // cloth
+    mCuts.push_back(mCuts[mCuts.size()-1]+20.0); // mind
+    mCuts.push_back(mCuts[mCuts.size()-1]+10.0); // balls
+    mCuts.push_back(mCuts[mCuts.size()-1]+26.0); // cubes
+    mCuts.push_back(mCuts[mCuts.size()-1]+26.0); // cloth
+    
+    
+
+    mAutoCut = true;
     // SCENES
     theCubes.Init();
     
@@ -384,7 +533,18 @@ void PixarDemo2012::update()
     }
     
     mTime += 0.01f;
+    float kFudge = 0.1; // ten times our step
+    
+    if(mAutoCut && mTime > mCuts[mCurrentCut] && mTime < mCuts[mCurrentCut] + kFudge )
+    {
+        doFade = true;
+        mCurrentCut = mCurrentCut + 1;
+        if(mCurrentCut >= mCuts.size())
+        {
+            mCurrentCut = mCuts.size()-1;
+        }
 
+    }
     mParticleController.update();
   
     if ( drawTitle ) {

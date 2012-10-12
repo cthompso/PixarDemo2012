@@ -65,7 +65,7 @@ public:
     void ResetTransform(btSoftBody* b);
     void PreRoll();
     void Respawn();
-    
+    int fctr;
     btSoftRigidDynamicsWorld* world;
     btDispatcher* dispatcher;
     btCollisionConfiguration* collisionConfig;
