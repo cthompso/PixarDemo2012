@@ -31,6 +31,7 @@ Cloth::~Cloth()
 
 void Cloth::Init(float angle)
 {
+    mNoiseTime = 0.0;
     mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
 	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
     
@@ -194,7 +195,7 @@ void Cloth::BuildMesh(btSoftBody* b)
 void Cloth::Update( )
 {
     mTime = mTime + getFrameRate()/60.0f;
-
+    mNoiseTime = mNoiseTime + 0.01;
 
     
     world->stepSimulation(1/60.0);
@@ -203,11 +204,15 @@ void Cloth::Update( )
         
         btSoftBody* b = world->getSoftBodyArray()[i];
     //  BuildMesh(b);
-        
+       
         float xW = 0.23 * cos(mTime*0.02 );
         float yW = 0.5 * sin(mTime * 0.04 );
         float zW = 0.15* sin(mTime*0.01);
         b->setWindVelocity(btVector3(xW, yW, zW));
+        
+        
+
+        
         //b->setWindVelocity(btVector3(1.3, 3.9, 1.1));
         /*
         for(int i=0;i<b->m_faces.size();i++)
@@ -265,7 +270,27 @@ void Cloth::Render()
 //    glCullFace(GL_BACK);
    // gl::disableAlphaTest();
     
-    //gl::enableAlphaBlending();
+    gl::enableAlphaBlending();
+    gl::setMatricesWindow( getWindowSize(), true );
+    
+    gl::enableAlphaBlending();
+    mBGShader.bind();
+    float what = mNoiseTime;
+    mBGShader.uniform("mTime", what);
+    mBGShader.uniform("resolution", Vec2f((float)getWindowWidth(),(float)getWindowHeight()));
+    gl::drawSolidRect( Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+    mBGShader.unbind();
+    
+    gl::popMatrices();
+
+    
+    gl::enable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
+    gl::disableAlphaBlending();
+    gl::enableAdditiveBlending();
+    
+    
     gl::setMatrices( mCamera );
     for(int i=0;i<world->getSoftBodyArray().size();i++)
     {
@@ -281,6 +306,9 @@ void Cloth::Render()
         }
     }
     gl::popMatrices();
+    
+    gl::disable(GL_CULL_FACE);
+    gl::enableAlphaBlending();
 }
 
 void Cloth::Shutdown()
@@ -307,12 +335,18 @@ void Cloth::bindShaders()
 //   string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/cloth.vert";
     string nf = mPath + "/cloth.frag";
+    
+    string bgv = mPath + "/bgCloth.vert";
+    string bgf = mPath + "/bgCloth.frag";
     mClothVert = nv.c_str();
     mClothFrag = nf.c_str();
+    mBGVert = bgv.c_str();
+    mBGFrag = bgf.c_str();
     try {
         if (true) {
             //for shader dev
             mClothShader = gl::GlslProg( loadFile( mClothVert ), loadFile( mClothFrag ) );
+            mBGShader = gl::GlslProg( loadFile( mBGVert ), loadFile( mBGFrag ) );
             
         } else {
             //for install

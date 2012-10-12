@@ -200,7 +200,10 @@ void PixarDemo2012::renderGradientFBO()
 void PixarDemo2012::draw()
 {
     //render Gradient FBO
-    renderGradientFBO();
+    if(!drawMindField && !drawCloth)
+    {
+        renderGradientFBO();
+    }
 
     gl::setViewport( getWindowBounds() );
     gl::setMatricesWindow( getWindowSize(), true );
@@ -216,12 +219,12 @@ void PixarDemo2012::draw()
         theTitle.Render();
     }
 
+    
+    // FFT stuff
+    generateWaveforms();
+    
     if ( drawMindField ) {
-    	gl::enableDepthRead();
-        gl::enableDepthWrite();
         theMindField.Render();
-        gl::disableDepthRead();
-        gl::disableDepthWrite();        
         return;
     }
     if ( drawCubes ) {
@@ -230,16 +233,11 @@ void PixarDemo2012::draw()
         theCubes.Render();
     }    
     if ( drawCloth ) {
-    	gl::enableDepthRead();
-        gl::enableDepthWrite();
+
         theCloth.Render();
-        gl::disableDepthRead();
-        gl::disableDepthWrite();
         return;
     }
     
-    // FFT stuff
-    generateWaveforms();
     
     // Balls
     gl::setMatricesWindow( getWindowSize(), true );
@@ -276,6 +274,7 @@ void PixarDemo2012::generateWaveforms()
 		PolyLine<Vec2f> timeLine;
         
         makeBall = 0.0f;
+        float greatestFreq = 0.0;
 		// Iterate through data
 		for ( int32_t i = 0; i < dataSize; i++ ) {
             
@@ -286,12 +285,17 @@ void PixarDemo2012::generateWaveforms()
             
             if (y > makeBall) makeBall = y;
             
+            if(y > greatestFreq)
+                greatestFreq = y;
+           
+            
 			// Plot points on lines for tme domain
 			freqLine.push_back( Vec2f(        x * scale + 10.0f,            -y * ( windowHeight - 20.0f ) * 1.75f + ( windowHeight - 10.0f ) ) );
 			timeLine.push_back( Vec2f( (float)i * scale + 10.0f, timeData[ i ] * ( windowHeight - 20.0f ) * 0.25f + ( windowHeight * 0.25f + 10.0f ) ) );
             
 		}
-        
+        //printf("%f\n", greatestFreq);
+         theMindField.SetAmps(greatestFreq);
 		// Draw signals
         if ( drawFFT ) {
             gl::draw( freqLine );
@@ -308,18 +312,19 @@ void PixarDemo2012::setup()
 
     // BASIC SETUP
     mTime           = 0.0f;
-    drawTitle       = true;
+    drawTitle       = false;
     drawScreenUV    = true;
     drawCairoFBO    = true;
     drawMindField   = false;
     drawFFT         = false;
-    mFullScreen     = false;
+    mFullScreen     = true;
     drawFPS         = true;
     drawCubes       = false;
     drawCloth       = false;
     
 	setFrameRate( 60.0f );
-	setWindowSize( 1000, 600 );
+ //setFullScreen(true);
+setWindowSize( 1000, 600 );
 
 //    mFont = Font( loadResource("Calibri.ttf"), 18.0f );
     mFont = Font( loadResource("synchro.ttf"), 18.0f );
@@ -328,7 +333,7 @@ void PixarDemo2012::setup()
 	mAudioSource = audio::load( loadResource("diva.m4a") );
 	mTrack = audio::Output::addTrack( mAudioSource, false );
 	mTrack->enablePcmBuffering( true );
-	mTrack->play();
+    mTrack->play();
     
     // SHADERS
     bindShaders();

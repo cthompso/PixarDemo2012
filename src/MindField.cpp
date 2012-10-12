@@ -12,6 +12,11 @@
 #include "cinder/Utilities.h"
 #include "cinder/Rand.h"
 
+
+#include "cinder/gl/Texture.h"
+#include "cinder/gl/GlslProg.h"
+#include "cinder/ImageIo.h"
+
 #include "cinder/Camera.h"
 #include "Resources.h"
 
@@ -35,6 +40,25 @@ void Neuron::Init()
 {
     t = 0.0f;
     c = 0.0f;
+    mAmp = randFloat(0.0, 0.1);
+    
+    r = randFloat(1.0, 15.0);
+    oldR = r;
+    phi =randFloat(0.0, 360.0) * pi / 180.0;
+    theta = randFloat(0.0, 180.0) * pi / 180.0;
+    randSpeed = randFloat(0.0001, 0.008);
+    randSpeed2 = randFloat(0.0001, 0.005);
+    mDistVal = r /2.0;//randFloat(2.0, 6.0);
+    if(mDistVal < 0.5)
+    {
+        mDistVal = 0.5;
+    }
+    
+    randDirection = false;
+    if(randInt(0,100)%2)
+    {
+        randDirection = true;
+    }
     
     F  = randVec3f();
     V = Vec3f::zero();
@@ -55,7 +79,7 @@ void Neuron::Init()
     p2.y = Rand::randFloat(kYLow, kYHigh);
     p2.z = Rand::randFloat(kZLow, kZHigh);
 
-    mSphere =  Sphere(pos, Rand::randFloat(0.09, 0.3));
+    mSphere =  Sphere(pos, Rand::randFloat(0.04, 0.15));
 }
 
 void Neuron::Shutdown()
@@ -65,7 +89,7 @@ void Neuron::Shutdown()
 
 void Neuron::Render()
 {
-    gl::color( Color( c + 0.2f, 0.2f, 0.5f ) );
+   // gl::color( Color( c + 0.2f, 0.2f, 0.5f ) );
     gl::drawSphere( pos, mSphere.getRadius() );
 }
 
@@ -76,7 +100,59 @@ void Neuron::SetBad()
 
 void Neuron::Update()
 {
-    t = t + 0.0001 * getFrameRate();
+   // t = t +  getFrameRate()/60000.0f;
+    
+    mAmp = mAmp - 0.00001 *getFrameRate();
+    if(mAmp < 0.0)
+    {
+        mAmp = 0.0;
+    }
+/*
+    if(mAmp > 0.08 && r == oldR)
+    {
+       // printf("here");
+        oldR += randFloat(-0.1, 0.1);
+        if(oldR > 15.0 )
+            oldR = 15.0;
+        if(oldR < -15.0)
+            oldR = -15.0;
+    }
+  */
+   // r = oldR + sin(0.0002 * getElapsedFrames());
+    if(randDirection)
+    {
+        phi = phi + getFrameRate() *randSpeed*0.01 - theMindField.xAmp* getFrameRate()*0.00001;
+        theta = theta + getFrameRate() * randSpeed2*0.01 - theMindField.xAmp* getFrameRate()*0.00001;;
+    }
+    else
+    {
+        
+        phi = phi - getFrameRate() *randSpeed*0.01 + theMindField.xAmp* getFrameRate()*0.00001;
+        theta = theta - getFrameRate() * randSpeed2*0.01 + theMindField.xAmp* getFrameRate()*0.00001;;
+        
+    }
+/*    if(r != oldR)
+    {
+        r += (oldR - r) * 0.00001*getFrameRate();
+        if( r - oldR < 0.005)
+        {
+            r = oldR;
+        }
+    }
+  */
+    if(phi < 0)
+    {
+        phi += 2 * pi;
+    }
+    if(phi > 2 * pi)
+    {
+        phi -= 2*pi;
+    }
+    float x, y, z;
+    theMindField.sphericalToCartesian(x, y,z, r,  theta, phi);
+    pos = Vec3f(x, y, z);
+    
+    /*
     if(t >= 1.0)
     {
         t = 0.0;
@@ -85,6 +161,8 @@ void Neuron::Update()
         p1 = pTemp;
     }
     pos = p1.lerp(t, p2);
+     */
+    
 //    printf("%f %f %f\n", pos.x, pos.y, pos.z);
 
     /*
@@ -114,15 +192,16 @@ Axon::~Axon()
 
 void Axon::Init(int a, int b)
 {
-
+    mAmp = 0.0;
+    mDamp = randFloat(0.01, 1.0);
     mDeleted= false;
     mA = a;
     mB = b;
-    int numP = 5;
+    int numP = 8;
     // BSpline
     for(int i = 0; i < numP; i++)
     {
-        mBasePoints.push_back(theMindField.mNeurons[mA]->pos.lerp( i / float((numP-1)), theMindField.mNeurons[mB]->pos));
+        mBasePoints.push_back(theMindField.mNeurons[mA]->pos.lerp( i / float((numP-2)), theMindField.mNeurons[mB]->pos));
     }
 
 	mCurPoints = mBasePoints;
@@ -160,22 +239,25 @@ void Axon::Update()
 
     float t = getElapsedSeconds(); // XXX pull this here or send as a param??
 
-    
+    float amp =  theMindField.mNeurons[mA]->mAmp * mDamp;
+    mAmp = amp;
     int numP = mBasePoints.size();
     for( size_t i = 0; i < numP; ++i ) {
         Vec3f p1 = theMindField.mNeurons[mA]->pos;
         Vec3f p2 = theMindField.mNeurons[mB]->pos;
         float l = (p1 - p2).length();
-         mBasePoints[i] = p1.lerp( i / float(numP - 1), p2);
+         mBasePoints[i] = p1.lerp( i / float(numP - 2), p2);
        //mCurPoints = mBasePoints;
         
         float dx = 0;
         float dy = 0;
         float dz = 0;
-        if( i > 0 && ( i < numP - 1 ) ) {
-            dx = sin( t*i * l )*0.02f;
-            dy = sin( t*i * l ) * 0.15;
-            dz = cos( t*i * l )*0.2f;
+        //float amp = abs(sin(t)) * 0.1;
+
+        if( i > 0 && ( i < numP -1 ) ) {
+            dx = sin( t*i * l ) * (amp + 0.001);
+            dy = sin( t*i * l ) * (amp + 0.002);
+            dz = cos( t*i * l )* (amp + 0.001);
         }
         mCurPoints[i] = mBasePoints[i] + Vec3f( dx, dy, dz );
          
@@ -218,7 +300,7 @@ void Axon::ResetTube()
 	mBSpline = BSpline3f( mCurPoints, degree, loop, open );
 	
 	// Tube
-	mNumSegs = 8;
+	mNumSegs = 16;
 	mTube.setBSpline( mBSpline ); // this dude is built and animated dynamically
 	mTube.setNumSegments( mNumSegs );
 	mTube.sampleCurve();
@@ -248,7 +330,12 @@ MindField::~MindField()
 
 void MindField::Init()
 {
-    mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.1f, 1000.0f );
+    mTime = 0.0;
+    mBlurView = 0.8;
+    
+    xAmp = 0.0;
+    yAmp = 0.0;
+    mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 0.25f, 1000.0f );
 	mCamera.lookAt( Vec3f( 0.0f, 0.0f, -10.0f ), Vec3f::zero() );
     
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
@@ -258,7 +345,7 @@ void MindField::Init()
     kBYDiv =  (kYHigh - kYLow)/ kBY;
     kBZDiv =  (kZHigh - kZLow)/ kBZ;
     
-    const int numNeurons = 800;
+    const int numNeurons = 350;
     for(int i = 0; i < numNeurons; i++)
     {
         Neuron* newNeuron = new Neuron;
@@ -270,12 +357,10 @@ void MindField::Init()
     
     gl::Fbo::Format format;
 	mSourceFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
-    mBlur1FBO = gl::Fbo( getWindowWidth()/2, getWindowHeight()/2, format);
-    mBlur2FBO = gl::Fbo( getWindowWidth()/2, getWindowHeight()/2, format);
+    mBlur1FBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
+    mBlur2FBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
     mDepthFBO = gl::Fbo( getWindowWidth(), getWindowHeight(), format);
     
-	
-
 }
 
 void MindField::Shutdown()
@@ -307,45 +392,141 @@ void MindField::Shutdown()
 
 void MindField::Render()
 {
+
+    Area viewport = gl::getViewport();
+    
+    // SOURCE
     mSourceFBO.bindFramebuffer();
     
     gl::setViewport( mSourceFBO.getBounds() );
     
+    
+   // glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+ // gl::clear( ColorA(0.2f,0.2f,0.2f,1.0f) );
+     gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
+    
+    
     gl::setMatricesWindow( getWindowSize(), true );
+    
+     gl::enableAlphaBlending();
+    mBGShader.bind();
+    float what = mTime;
+    mBGShader.uniform("mTime", what);
+    mBGShader.uniform("resolution", Vec2f((float)getWindowWidth(),(float)getWindowHeight()));
+    gl::drawSolidRect( mSourceFBO.getBounds());
+    mBGShader.unbind();
+    
+    gl::popMatrices();
     gl::setMatrices( mCamera );
     
-    glClear(GL_DEPTH_BUFFER_BIT);
-    gl::clear( ColorA(0.2f,0.2f,0.2f,1.0f) );
+    gl::enableDepthRead();
+    gl::enableDepthWrite();
+    
+    gl::enable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
+    gl::disableAlphaBlending();
+    gl::enableAdditiveBlending();
+    
+    glEnable(GL_DEPTH_TEST);
+    
+    //NEURON
     
     // bind neuron shaders
     mNeuronShader.bind();
     for(int i = 0; i < mNeurons.size(); i++)
     {
+        mNeuronShader.uniform("energy",mNeurons[i]->mAmp);
         mNeurons[i]->Render();
     }
-
     mNeuronShader.unbind();
+    
+    // AXON
     mAxonShader.bind();
     // bind axon shaders
     for( list<Axon*>::iterator p = mAxons.begin(); p != mAxons.end(); ++p )
     {
+        mAxonShader.uniform("energy",(*p)->mAmp);
         (*p)->Render();
     }
     mAxonShader.unbind();
     
+    
     mSourceFBO.unbindFramebuffer();
+    
+    glDisable(GL_DEPTH_TEST);
+    
+    gl::disable(GL_CULL_FACE);
+    
+    gl::enableAlphaBlending();
     
     gl::popMatrices();
     
+    gl::disableDepthRead();
+    gl::disableDepthWrite();
     
-    // draw FBO bg
+    // Blur HORIZ
+    mBlurShader.bind();
+    mBlurShader.uniform("tex0",0);
+    mBlurShader.uniform("sampleOffset",Vec2f(1.0f/mBlur1FBO.getWidth(), 0.0f));
+    gl::setViewport( mBlur1FBO.getBounds() );
+	mBlur1FBO.bindFramebuffer();
+    mSourceFBO.bindTexture(0);
+    gl::pushMatrices();
+    gl::setMatricesWindow(getWindowSize(),  false);
+    gl::clear( Color::black() );
+    gl::drawSolidRect( mBlur1FBO.getBounds() );
+    gl::popMatrices();
+    mSourceFBO.unbindTexture();
+	mBlur1FBO.unbindFramebuffer();
+    
+    // Blur VERT
+    mBlurShader.uniform("sampleOffset",Vec2f(0.0f, 1.0f/mBlur2FBO.getHeight()));
+    gl::setViewport( mBlur2FBO.getBounds() );
+	mBlur2FBO.bindFramebuffer();
+    mBlur1FBO.bindTexture(0);
+    gl::pushMatrices();
+    gl::setMatricesWindow(getWindowSize(),  false);
+    gl::clear( Color::black() );
+    gl::drawSolidRect( mBlur2FBO.getBounds() );
+    gl::popMatrices();
+    mBlur1FBO.unbindTexture();
+	mBlur2FBO.unbindFramebuffer();
+    mBlurShader.unbind();
+    
+    
+    // draw Composite
+    mDOFShader.bind();
+    // bind two inputs
+    mDOFShader.uniform("tex0",0);
+    mDOFShader.uniform("tex1",1);
+    mDOFShader.uniform("tex2",2);
+    mDOFShader.uniform("blurView",mBlurView);
+    
+    mSourceFBO.bindTexture(0);
+    mBlur2FBO.bindTexture(1);
+    mSourceFBO.bindDepthTexture(2);
+   
+    // draw screen quad
     gl::setMatricesWindow( getWindowSize(), true );
     gl::color(1.0f,1.0f,1.0f);
-    gl::draw( mSourceFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
-   // gl::draw( mSourceFBO.getDepthTexture(), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+    
+    gl::drawSolidRect(Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+   // gl::drawStrokedRect(  Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+   // gl::drawRect(mSourceFBO.getDepthTexture(), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
+
+    mSourceFBO.unbindTexture();
+    mBlur2FBO.unbindTexture();
+    //mSourceFBO.getDepthTexture().unbind();
+    mDOFShader.unbind();
+    
     // reset camera for geometry
     gl::popMatrices();
     
+    
+    // restore the viewport
+	//gl::setViewport( viewport )
 }
 
 void MindField::UpdateAxons()
@@ -358,7 +539,7 @@ void MindField::UpdateAxons()
         int by = floor( (n->pos.y + abs(kYLow) ) / kBYDiv);
         int bz = floor( (n->pos.z + abs(kZLow)) / kBZDiv);
         
-        float distVal = 5.5;
+        float distVal = n->mDistVal;
         
         // dumbly check against all other neurons
         for(int j = 0; j < mBins[bx][by][bz].size(); j++)
@@ -372,6 +553,14 @@ void MindField::UpdateAxons()
             float  d=n->pos.distanceSquared (m->pos);
             if( d < distVal )
             {
+                if(n->mAmp < m->mAmp)
+                {
+                    n->mAmp = m->mAmp - 0.001;
+                }
+                else
+                {
+                    m->mAmp = n->mAmp - 0.001;
+                }
                 CreateAxon(i, idx);
             }
 
@@ -507,10 +696,30 @@ void MindField::ClearBins()
             }
     }
 }
-
-void MindField::Update()
+void MindField::SetAmps(float x)
 {
     
+    xAmp = x ;
+    yAmp = x ;
+    
+    if(xAmp > 0.1)
+    {
+        xAmp = 0.1;
+    }
+    
+    for(int i = 0; i < mNeurons.size(); i++)
+    {
+        if(i%10 == 0)
+        {
+            Neuron* n = mNeurons[i];
+            n->mAmp = xAmp;
+        }
+    }
+}
+void MindField::Update()
+{
+  mTime += 0.01f;
+
     //camera update
     Vec3f pos = mCamera.getEyePoint();
     
@@ -519,16 +728,24 @@ void MindField::Update()
     mCamera.setCenterOfInterestPoint(Vec3f(0,0,0));
     
     mLerper = mLerper + 0.0000001* getFrameRate();
+    float camBound = 8.0;
+    
+    float d = newPos.length();
+    float maxLength = Vec3f(camBound, camBound, camBound).length();
+    float t = d / maxLength;
+    mBlurView = lerp(0.9,1.5,  t);
+    
+
     if(mLerper >= 1.0)
     {
         mLerper = 0.0;
-        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+        mNextCamPoint = Vec3f(randFloat(-camBound,camBound), randFloat(-camBound,camBound), randFloat(-camBound,camBound));
     }
     
     if(pos.distance(mNextCamPoint) < 5)
     {
         mLerper = 0.0;
-        mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
+        mNextCamPoint = Vec3f(randFloat(-camBound, camBound), randFloat(-camBound,camBound), randFloat(-camBound,camBound));
     }
     // end camera update
     
@@ -559,12 +776,12 @@ void MindField::Update()
 }
 
 
-void MindField::cartesianToSpherical( double & r,
-                     double & theta,
-                     double & phi,
-                     double   x,
-                     double   y,
-                     double   z )
+void MindField::cartesianToSpherical( float & r,
+                     float & theta,
+                     float & phi,
+                     float   x,
+                     float   y,
+                     float   z )
 {
     if ( ( r = sqrt( x * x + y * y + z * z ) ) != 0.0 )
     {
@@ -577,12 +794,12 @@ void MindField::cartesianToSpherical( double & r,
 
 
 
-void MindField::sphericalToCartesian( double & x,
-                     double & y,
-                     double & z,
-                     double   r,
-                     double   theta,
-                     double   phi )
+void MindField::sphericalToCartesian( float & x,
+                     float & y,
+                     float & z,
+                     float   r,
+                     float   theta,
+                     float   phi )
 {
     if ( r < 0.0 )
         throw "Negative radius in sphericalToCartesian()";
@@ -601,18 +818,34 @@ void MindField::bindShaders()
    //  string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/neuron.vert";
     string nf = mPath + "/neuron.frag";
-    mNeuronVert = nv.c_str();
-    mNeuronFrag = nf.c_str();
+    string bv = mPath + "/blur.vert";
+    string bf = mPath + "/blur.frag";
+    string dv = mPath + "/dof.vert";
+    string df = mPath + "/dof.frag";
     string av = mPath + "/axon.vert";
     string af = mPath + "/axon.frag";
+    string bgv = mPath + "/bgMind.vert";
+    string bgf = mPath + "/bgMind.frag";
+    
+    mNeuronVert = nv.c_str();
+    mNeuronFrag = nf.c_str();
+    mBlurVert = bv.c_str();
+    mBlurFrag = bf.c_str();
+    mDOFVert = dv.c_str();
+    mDOFFrag = df.c_str();
     mAxonVert = av.c_str();
     mAxonFrag = af.c_str();
+    mBGVert = bgv.c_str();
+    mBGFrag = bgf.c_str();
+    
     try {
         if (true) {
             //for shader dev
             mNeuronShader = gl::GlslProg( loadFile( mNeuronVert ), loadFile( mNeuronFrag ) );
             mAxonShader = gl::GlslProg( loadFile( mAxonVert ), loadFile( mAxonFrag ) );
-          
+            mBlurShader = gl::GlslProg( loadFile( mBlurVert ), loadFile( mBlurFrag ) );
+            mDOFShader =  gl::GlslProg( loadFile( mDOFVert ), loadFile( mDOFFrag ) );
+            mBGShader = gl::GlslProg( loadFile( mBGVert ), loadFile( mBGFrag ) );
         } else {
             //for install
             //mGradientShader = gl::GlslProg( loadResource( mGradientVertex ), loadResource( mGradientFrag ) );
