@@ -13,7 +13,6 @@
 		00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */; };
 		00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B10FF439BC000DE1D7 /* AudioUnit.framework */; };
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
-		07E197731627994400A51216 /* BulletCollision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E197721627994400A51216 /* BulletCollision.framework */; };
 		07E197791627CE9D00A51216 /* blur.frag in Sources */ = {isa = PBXBuildFile; fileRef = 07E197771627CE9D00A51216 /* blur.frag */; };
 		07E1977A1627CE9D00A51216 /* blur.vert in Sources */ = {isa = PBXBuildFile; fileRef = 07E197781627CE9D00A51216 /* blur.vert */; };
 		07E1977D1627D24D00A51216 /* dof.frag in Sources */ = {isa = PBXBuildFile; fileRef = 07E1977B1627D24D00A51216 /* dof.frag */; };
@@ -36,8 +35,27 @@
 		3B21292416272E53006D217B /* Branch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292216272E53006D217B /* Branch.cpp */; };
 		3B21292516272E53006D217B /* BranchController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292316272E53006D217B /* BranchController.cpp */; };
 		3B21292C1627A9C8006D217B /* synchro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B21292B1627A9C8006D217B /* synchro.ttf */; };
-		3B21292F1627D3F5006D217B /* title.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292D1627D3F5006D217B /* title.frag */; };
-		3B2129301627D3F5006D217B /* title.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B21292E1627D3F5006D217B /* title.vert */; };
+		3B31A86F16288B3C00930E61 /* title.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B21292D1627D3F5006D217B /* title.frag */; };
+		3B31A87016288B3C00930E61 /* title.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B21292E1627D3F5006D217B /* title.vert */; };
+		3B31A87116288B3C00930E61 /* cloth.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B18126B16260F8D00CCC23F /* cloth.frag */; };
+		3B31A87216288B3C00930E61 /* cloth.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B18126C16260F8D00CCC23F /* cloth.vert */; };
+		3B31A87316288B3C00930E61 /* dof.frag in Resources */ = {isa = PBXBuildFile; fileRef = 07E1977B1627D24D00A51216 /* dof.frag */; };
+		3B31A87416288B3C00930E61 /* bgCloth.frag in Resources */ = {isa = PBXBuildFile; fileRef = 07E1978B162823B700A51216 /* bgCloth.frag */; };
+		3B31A87516288B3C00930E61 /* bgCloth.vert in Resources */ = {isa = PBXBuildFile; fileRef = 07E1978C162823B700A51216 /* bgCloth.vert */; };
+		3B31A87616288B3C00930E61 /* bgMind.frag in Resources */ = {isa = PBXBuildFile; fileRef = 07E1978D162823B700A51216 /* bgMind.frag */; };
+		3B31A87716288B3C00930E61 /* bgMind.vert in Resources */ = {isa = PBXBuildFile; fileRef = 07E1978E162823B700A51216 /* bgMind.vert */; };
+		3B31A87816288B3C00930E61 /* dof.vert in Resources */ = {isa = PBXBuildFile; fileRef = 07E1977C1627D24D00A51216 /* dof.vert */; };
+		3B31A87916288B3C00930E61 /* neuron.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B57E77616234B61009A4615 /* neuron.vert */; };
+		3B31A87A16288B3C00930E61 /* neuron.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B57E77716234B61009A4615 /* neuron.frag */; };
+		3B31A87B16288B3C00930E61 /* axon.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B57E77816234B61009A4615 /* axon.vert */; };
+		3B31A87C16288B3C00930E61 /* axon.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B57E77916234B61009A4615 /* axon.frag */; };
+		3B31A87D16288B3C00930E61 /* blur.frag in Resources */ = {isa = PBXBuildFile; fileRef = 07E197771627CE9D00A51216 /* blur.frag */; };
+		3B31A87E16288B3C00930E61 /* blur.vert in Resources */ = {isa = PBXBuildFile; fileRef = 07E197781627CE9D00A51216 /* blur.vert */; };
+		3B31A87F16288B3C00930E61 /* cubes.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B0506C21620BE640070F0D5 /* cubes.frag */; };
+		3B31A88016288B3C00930E61 /* cubes.geom in Resources */ = {isa = PBXBuildFile; fileRef = 3B0506C31620BE640070F0D5 /* cubes.geom */; };
+		3B31A88116288B3C00930E61 /* cubes.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B0506C41620BE640070F0D5 /* cubes.vert */; };
+		3B31A88216288B3C00930E61 /* fbo.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3B0506C61620BE640070F0D5 /* fbo.frag */; };
+		3B31A88316288B3C00930E61 /* fbo.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3B0506C71620BE640070F0D5 /* fbo.vert */; };
 		3B32F3DF1626972B000D924D /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B32F3DE1626972B000D924D /* logo.png */; };
 		3B32F3E316270DBB000D924D /* Title.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B32F3E216270DBB000D924D /* Title.cpp */; };
 		3B57E77A16234B61009A4615 /* neuron.vert in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77616234B61009A4615 /* neuron.vert */; };
@@ -46,6 +64,7 @@
 		3B57E77D16234B61009A4615 /* axon.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77916234B61009A4615 /* axon.frag */; };
 		3B57E78116234B86009A4615 /* Tube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E77F16234B86009A4615 /* Tube.cpp */; };
 		3B57E78216234B86009A4615 /* MindField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B57E78016234B86009A4615 /* MindField.cpp */; };
+		3B91C92116287C0700F49774 /* BulletCollision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B91C92016287C0700F49774 /* BulletCollision.framework */; };
 		3BBCF4811625BA6A000510B2 /* Cubes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCF47F1625BA6A000510B2 /* Cubes.cpp */; };
 		3BEB7542162617D9007FBD46 /* BulletDynamics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753D162617D9007FBD46 /* BulletDynamics.framework */; };
 		3BEB7543162617D9007FBD46 /* BulletMultiThreaded.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEB753E162617D9007FBD46 /* BulletMultiThreaded.framework */; };
@@ -71,7 +90,6 @@
 		00B784B00FF439BC000DE1D7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		00B784B10FF439BC000DE1D7 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		00B784B20FF439BC000DE1D7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		07E197721627994400A51216 /* BulletCollision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletCollision.framework; path = ../../../../Library/Frameworks/BulletCollision.framework; sourceTree = "<group>"; };
 		07E197771627CE9D00A51216 /* blur.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = blur.frag; sourceTree = "<group>"; };
 		07E197781627CE9D00A51216 /* blur.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = blur.vert; sourceTree = "<group>"; };
 		07E1977B1627D24D00A51216 /* dof.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = dof.frag; sourceTree = "<group>"; };
@@ -115,6 +133,7 @@
 		3B57E78016234B86009A4615 /* MindField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MindField.cpp; path = ../src/MindField.cpp; sourceTree = "<group>"; };
 		3B57E78316234BC6009A4615 /* Tube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tube.h; path = ../include/Tube.h; sourceTree = "<group>"; };
 		3B57E78416234BC6009A4615 /* MindField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MindField.h; path = ../include/MindField.h; sourceTree = "<group>"; };
+		3B91C92016287C0700F49774 /* BulletCollision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletCollision.framework; path = /Library/Frameworks/BulletCollision.framework; sourceTree = "<absolute>"; };
 		3BBCF47D1625BA4C000510B2 /* Cubes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Cubes.h; path = ../include/Cubes.h; sourceTree = "<group>"; };
 		3BBCF47F1625BA6A000510B2 /* Cubes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cubes.cpp; path = ../src/Cubes.cpp; sourceTree = "<group>"; };
 		3BEB753D162617D9007FBD46 /* BulletDynamics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BulletDynamics.framework; path = ../../../../../../Library/Frameworks/BulletDynamics.framework; sourceTree = "<group>"; };
@@ -161,7 +180,7 @@
 				3BEB7543162617D9007FBD46 /* BulletMultiThreaded.framework in Frameworks */,
 				3BEB7544162617D9007FBD46 /* BulletSoftBody.framework in Frameworks */,
 				3BEB7545162617D9007FBD46 /* LinearMath.framework in Frameworks */,
-				07E197731627994400A51216 /* BulletCollision.framework in Frameworks */,
+				3B91C92116287C0700F49774 /* BulletCollision.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +219,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				07E197721627994400A51216 /* BulletCollision.framework */,
+				3B91C92016287C0700F49774 /* BulletCollision.framework */,
 				3BEB753D162617D9007FBD46 /* BulletDynamics.framework */,
 				3BEB753E162617D9007FBD46 /* BulletMultiThreaded.framework */,
 				3BEB753F162617D9007FBD46 /* BulletSoftBody.framework */,
@@ -374,6 +393,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B31A86F16288B3C00930E61 /* title.frag in Resources */,
+				3B31A87016288B3C00930E61 /* title.vert in Resources */,
+				3B31A87116288B3C00930E61 /* cloth.frag in Resources */,
+				3B31A87216288B3C00930E61 /* cloth.vert in Resources */,
+				3B31A87316288B3C00930E61 /* dof.frag in Resources */,
+				3B31A87416288B3C00930E61 /* bgCloth.frag in Resources */,
+				3B31A87516288B3C00930E61 /* bgCloth.vert in Resources */,
+				3B31A87616288B3C00930E61 /* bgMind.frag in Resources */,
+				3B31A87716288B3C00930E61 /* bgMind.vert in Resources */,
+				3B31A87816288B3C00930E61 /* dof.vert in Resources */,
+				3B31A87916288B3C00930E61 /* neuron.vert in Resources */,
+				3B31A87A16288B3C00930E61 /* neuron.frag in Resources */,
+				3B31A87B16288B3C00930E61 /* axon.vert in Resources */,
+				3B31A87C16288B3C00930E61 /* axon.frag in Resources */,
+				3B31A87D16288B3C00930E61 /* blur.frag in Resources */,
+				3B31A87E16288B3C00930E61 /* blur.vert in Resources */,
+				3B31A87F16288B3C00930E61 /* cubes.frag in Resources */,
+				3B31A88016288B3C00930E61 /* cubes.geom in Resources */,
+				3B31A88116288B3C00930E61 /* cubes.vert in Resources */,
+				3B31A88216288B3C00930E61 /* fbo.frag in Resources */,
+				3B31A88316288B3C00930E61 /* fbo.vert in Resources */,
 				3B0506CD1620BE640070F0D5 /* diva.m4a in Resources */,
 				3B0506D01620BE640070F0D5 /* uv.jpg in Resources */,
 				3B0506D11620BE640070F0D5 /* uv.png in Resources */,
@@ -431,7 +471,7 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/colin/Dev/lib/Cinder;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -460,7 +500,7 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/colin/Dev/lib/Cinder;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -492,15 +532,17 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = i386;
-				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/colin/Dev/lib/Cinder;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/boost",
-					"/Users/shalinkhyati/bullet-2.81/src/**",
+					"/Users/colin/bullet-2.81/src/**",
+					"$(CINDER_PATH)",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx10.8;
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include ../include";
 			};
 			name = Debug;
@@ -510,15 +552,17 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = i386;
-				CINDER_PATH = /Users/shalinkhyati/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/colin/Dev/lib/Cinder;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/boost",
-					"/Users/shalinkhyati/bullet-2.81/src/**",
+					"/Users/colin/bullet-2.81/src/**",
+					"$(CINDER_PATH)",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx10.8;
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include ../include";
 			};
 			name = Release;

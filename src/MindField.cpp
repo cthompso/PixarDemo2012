@@ -405,6 +405,7 @@ void MindField::Render()
 
  // gl::clear( ColorA(0.2f,0.2f,0.2f,1.0f) );
      gl::clear( ColorA(0.0f,0.0f,0.0f,1.0f) );
+    gl::setMatrices( mCamera );
     
     
     gl::setMatricesWindow( getWindowSize(), true );
@@ -414,7 +415,7 @@ void MindField::Render()
     float what = mTime;
     mBGShader.uniform("mTime", what);
     mBGShader.uniform("resolution", Vec2f((float)getWindowWidth(),(float)getWindowHeight()));
-    gl::drawSolidRect( mSourceFBO.getBounds());
+    gl::drawSolidRect( getWindowBounds() ); //mSourceFBO.getBounds());
     mBGShader.unbind();
     
     gl::popMatrices();
@@ -839,7 +840,7 @@ void MindField::bindShaders()
     mBGFrag = bgf.c_str();
     
     try {
-        if (true) {
+        if (false) {
             //for shader dev
             mNeuronShader = gl::GlslProg( loadFile( mNeuronVert ), loadFile( mNeuronFrag ) );
             mAxonShader = gl::GlslProg( loadFile( mAxonVert ), loadFile( mAxonFrag ) );
@@ -848,7 +849,11 @@ void MindField::bindShaders()
             mBGShader = gl::GlslProg( loadFile( mBGVert ), loadFile( mBGFrag ) );
         } else {
             //for install
-            //mGradientShader = gl::GlslProg( loadResource( mGradientVertex ), loadResource( mGradientFrag ) );
+            mNeuronShader = gl::GlslProg( loadResource( NERUON_VERT ), loadResource( NEURON_FRAG ) );
+            mAxonShader = gl::GlslProg( loadResource( AXON_VERT ), loadResource( AXON_FRAG ) );
+            mBlurShader = gl::GlslProg( loadResource( BLUR_VERT ), loadResource( BLUR_FRAG ) );
+            mDOFShader =  gl::GlslProg( loadResource( DOF_VERT ), loadResource( DOF_FRAG ) );
+            mBGShader = gl::GlslProg( loadResource( BGMIND_VERT ), loadResource( BGMIND_FRAG ) );
         }
 	}
     catch( gl::GlslProgCompileExc &exc ) {
@@ -856,7 +861,7 @@ void MindField::bindShaders()
 		std::cout << exc.what();
 	}
 	catch( ... ) {
-		std::cout << "Unable to load shader" << std::endl;
+		std::cout << "Unable to load mind field shaders" << std::endl;
 	}
 
     

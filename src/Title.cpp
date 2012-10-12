@@ -37,7 +37,8 @@ void Title::Init()
 	branches = BranchController();
     //CAIRO
     mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
-    mTexture = loadImage( loadResource("logo.png") );    
+    mTexture = loadImage( loadResource("logo.png") );
+//    mTexture = loadImage( loadResource(LOGO_PNG) );
 }
 void Title::BindShaders()
 {
@@ -62,7 +63,7 @@ void Title::BindShaders()
             mTitleShader = gl::GlslProg( loadFile( mTitleVertex ), loadFile( mTitleFrag) );
         } else {
             //for install
-            mTitleShader = gl::GlslProg( loadResource( mTitleVertex ), loadResource( mTitleFrag) );
+            mTitleShader = gl::GlslProg( loadResource( TITLE_VERT ), loadResource( TITLE_FRAG) );
         }
 	}
 	catch( gl::GlslProgCompileExc &exc ) {

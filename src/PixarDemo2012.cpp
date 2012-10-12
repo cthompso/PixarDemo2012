@@ -146,7 +146,7 @@ void PixarDemo2012::bindShaders()
     mGradientFrag = mFrag.c_str();
     
 	try {
-        if (true) {
+        if (false) {
             //for shader dev
             int32_t maxGeomOutputVertices;
             glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, & maxGeomOutputVertices);
@@ -154,7 +154,7 @@ void PixarDemo2012::bindShaders()
             mGradientShader = gl::GlslProg( loadFile( mGradientVertex ), loadFile( mGradientFrag ) );
         } else {
             //for install
-            mGradientShader = gl::GlslProg( loadResource( mGradientVertex ), loadResource( mGradientFrag ) );
+            mGradientShader = gl::GlslProg( loadResource( FBO_VERT ), loadResource( FBO_FRAG ) );
         }
 	}
 	catch( gl::GlslProgCompileExc &exc ) {
@@ -162,7 +162,7 @@ void PixarDemo2012::bindShaders()
 		std::cout << exc.what();
 	}
 	catch( ... ) {
-		std::cout << "Unable to load shader" << std::endl;
+		std::cout << "Unable to load fbo shaders" << std::endl;
 	}
 }
 
@@ -312,13 +312,13 @@ void PixarDemo2012::setup()
 
     // BASIC SETUP
     mTime           = 0.0f;
-    drawTitle       = false;
+    drawTitle       = true;
     drawScreenUV    = true;
     drawCairoFBO    = true;
     drawMindField   = false;
     drawFFT         = false;
-    mFullScreen     = true;
-    drawFPS         = true;
+    mFullScreen     = false;
+    drawFPS         = false;
     drawCubes       = false;
     drawCloth       = false;
     
@@ -333,7 +333,7 @@ setWindowSize( 1000, 600 );
 	mAudioSource = audio::load( loadResource("diva.m4a") );
 	mTrack = audio::Output::addTrack( mAudioSource, false );
 	mTrack->enablePcmBuffering( true );
-    mTrack->play();
+//    mTrack->play();
     
     // SHADERS
     bindShaders();

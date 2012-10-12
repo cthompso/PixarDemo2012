@@ -350,7 +350,8 @@ void Cloth::bindShaders()
             
         } else {
             //for install
-            //mGradientShader = gl::GlslProg( loadResource( mGradientVertex ), loadResource( mGradientFrag ) );
+            mClothShader = gl::GlslProg( loadResource( CLOTH_VERT ), loadFile( CLOTH_FRAG ) );
+            mBGShader = gl::GlslProg( loadResource( BGCLOTH_VERT ), loadResource( BGCLOTH_FRAG ) );
         }
 	}
     catch( gl::GlslProgCompileExc &exc ) {
@@ -358,7 +359,7 @@ void Cloth::bindShaders()
 		std::cout << exc.what();
 	}
 	catch( ... ) {
-		std::cout << "Unable to load shader" << std::endl;
+		std::cout << "Unable to load cloth shaders" << std::endl;
 	}
     
     

@@ -86,7 +86,7 @@ void Cubes::BindShaders()
     //    printf("vert is: %s\n",mGradientVertex);
     //    printf("frag is: %s\n",mGradientFrag);
 	try {
-        if (true) {
+        if (false) {
             //for shader dev
             int32_t maxGeomOutputVertices;
             glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, & maxGeomOutputVertices);
@@ -94,7 +94,7 @@ void Cubes::BindShaders()
             mCubesShader = gl::GlslProg( loadFile( mCubesVertex ), loadFile( mCubesFrag) , loadFile( mCubesGeom ), GL_POINTS, GL_TRIANGLE_STRIP, 37);//maxGeomOutputVertices );
         } else {
             //for install
-            mCubesShader = gl::GlslProg( loadResource( mCubesVertex ), loadResource( mCubesFrag) , loadFile( mCubesGeom ), GL_POINTS, GL_TRIANGLE_STRIP, 37);//maxGeomOutputVertices );
+            mCubesShader = gl::GlslProg( loadResource( CUBES_VERT ), loadResource( CUBES_FRAG) , loadResource( CUBES_GEOM ), GL_POINTS, GL_TRIANGLE_STRIP, 37);//maxGeomOutputVertices );
         }
 	}
 	catch( gl::GlslProgCompileExc &exc ) {
@@ -102,7 +102,7 @@ void Cubes::BindShaders()
 		std::cout << exc.what();
 	}
 	catch( ... ) {
-		std::cout << "Unable to load shader" << std::endl;
+		std::cout << "Unable to load cubes shaders" << std::endl;
 	}
     
     

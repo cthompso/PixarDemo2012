@@ -29,6 +29,8 @@
 #include "cinder/Frustum.h"
 
 #include "cinder/Camera.h"
+
+#include "Resources.h"
  
 using namespace ci;
 using namespace cinder;
