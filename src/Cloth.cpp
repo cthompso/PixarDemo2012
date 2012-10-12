@@ -16,7 +16,7 @@ using namespace ci;
 using namespace std;
 using namespace ci::app;
 Cloth *Cloth::s_Cloth= 0;
-
+ 
 Cloth::Cloth()
 {
     

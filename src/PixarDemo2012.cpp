@@ -136,7 +136,7 @@ void PixarDemo2012::bindShaders()
     theCubes.BindShaders();
     theCloth.bindShaders();
     
-    
+     
     string mPath = getResourcePath().generic_string();
     mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
   //  mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
