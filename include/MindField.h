@@ -5,7 +5,7 @@
 //  Created by Shalin Shodhan on 10/6/12.
 //
 //
-
+ 
 #ifndef __PixarDemo2012__Neuron__
 #define __PixarDemo2012__Neuron__
 
@@ -16,6 +16,10 @@
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/GlslProg.h"
+
+#include "cinder/Camera.h"
+
+#include "cinder/gl/Fbo.h"
 
 #include <iostream>
 #include <vector>
@@ -164,6 +168,17 @@ public:
     gl::GlslProg mAxonShader;
 	const char* mAxonVert;
 	const char* mAxonFrag;
+    
+    //fbo
+	gl::Fbo mSourceFBO;
+    gl::Fbo mBlur1FBO;
+    gl::Fbo mBlur2FBO;
+    gl::Fbo mDepthFBO;
+    
+    ci::CameraPersp				mCamera;
+    
+    Vec3f mNextCamPoint;
+    float mLerper;
     
 protected:	
 	//! singleton instance

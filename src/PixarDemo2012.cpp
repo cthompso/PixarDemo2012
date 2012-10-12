@@ -135,9 +135,10 @@ void PixarDemo2012::bindShaders()
     theCubes.BindShaders();
     theCloth.bindShaders();
     
-    
+     
     string mPath = getResourcePath().generic_string();
     mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+  //  mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string mVert = mPath + "/fbo.vert";
     string mFrag = mPath + "/fbo.frag";
     mGradientVertex = mVert.c_str();
@@ -235,6 +236,7 @@ void PixarDemo2012::draw()
         theCloth.Render();
         gl::disableDepthRead();
         gl::disableDepthWrite();
+        return;
     }
     
     // FFT stuff
@@ -375,7 +377,7 @@ void PixarDemo2012::update()
     }
     
     if ( drawCloth ) {
-        theCloth.Update( mCamera );
+        theCloth.Update(  );
     }
     
     if ( drawCubes ) {
