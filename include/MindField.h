@@ -17,6 +17,10 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/GlslProg.h"
 
+#include "cinder/Camera.h"
+
+#include "cinder/gl/Fbo.h"
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -164,6 +168,17 @@ public:
     gl::GlslProg mAxonShader;
 	const char* mAxonVert;
 	const char* mAxonFrag;
+    
+    //fbo
+	gl::Fbo mSourceFBO;
+    gl::Fbo mBlur1FBO;
+    gl::Fbo mBlur2FBO;
+    gl::Fbo mDepthFBO;
+    
+    ci::CameraPersp				mCamera;
+    
+    Vec3f mNextCamPoint;
+    float mLerper;
     
 protected:	
 	//! singleton instance
