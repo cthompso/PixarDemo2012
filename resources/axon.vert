@@ -4,6 +4,8 @@ varying vec3 ecPosition3;
 varying vec3 normal;
 varying vec4 ambientGlobal;
 
+varying float dist;
+
 void main()
 {
 	ecPosition		= gl_ModelViewMatrix * gl_Vertex;
@@ -12,7 +14,9 @@ void main()
 	normal			= gl_NormalMatrix * gl_Normal;
 	gl_Position		= gl_ModelViewProjectionMatrix * gl_Vertex;
 	
-
+    vec4 camera_pos = gl_ModelViewMatrixInverse[3];
+    dist = 1.0 - (distance(camera_pos.xyz, gl_Vertex.xyz) /20.0);
+    
     
 	ambientGlobal	= gl_LightModel.ambient * gl_FrontMaterial.ambient;
 }

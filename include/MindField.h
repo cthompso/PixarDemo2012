@@ -30,12 +30,12 @@ using namespace cinder;
 
 #define theMindField MindField::getInstance()
 
-const float kXLow = -15.0f;
-const float kXHigh = 15.0f;
-const float kYLow = -15.0f;
-const float kYHigh  = 15.0f;
-const float kZLow = -15.0f;
-const float kZHigh  = 15.0f;
+const float kXLow = -20.0f;
+const float kXHigh = 20.0f;
+const float kYLow = -20.0f;
+const float kYHigh  = 20.0f;
+const float kZLow = -20.0f;
+const float kZHigh  = 20.0f;
 
 const int kBX = 5;
 const int kBY = 5;
@@ -63,16 +63,24 @@ public:
     Vec3f p2;
     float t;
     
+    float r, phi, theta;
+    
     float c;
     
     Sphere mSphere;
+    float mDistVal;
+    
+    float randSpeed;
+    float randSpeed2;
+    bool randDirection;
     
     Vec3f F;
     float m;
     Vec3f A;
     Vec3f V;
     
-
+    float mAmp;
+    float oldR;
 
 };
 
@@ -93,7 +101,9 @@ public:
     int mB;
     
     bool mDeleted;
-    
+    float mAmp;
+    float mWidth;
+    float mDamp;
     // Tubulation
     Tube					mTube;
 	std::vector<Vec3f>		mBasePoints;
@@ -136,21 +146,22 @@ public:
     void RemoveAxon(int a, int b);
     void ClearBins();
     void bindShaders();
+    void SetAmps(float x  );
     
     
-    void sphericalToCartesian( double & x,
-                                         double & y,
-                                         double & z,
-                                         double   r,
-                                         double   theta,
-                                         double   phi );
+    void sphericalToCartesian( float & x,
+                                         float & y,
+                                         float & z,
+                                         float   r,
+                                         float   theta,
+                                         float   phi );
     
-    void cartesianToSpherical( double & r,
-                                         double & theta,
-                                         double & phi,
-                                         double   x,
-                                         double   y,
-                                         double   z );
+    void cartesianToSpherical( float & r,
+                                         float & theta,
+                                         float & phi,
+                                         float   x,
+                                         float   y,
+                                         float   z );
     std::vector<Neuron* > mNeurons;
     std::list<Axon* > mAxons;
     
@@ -161,6 +172,12 @@ public:
     tAxonMap mAxonMap;
     tAxonPairMap mAxonData;
     
+    
+    gl::GlslProg mBGShader;
+	const char* mBGVert;
+	const char* mBGFrag;
+
+    
     gl::GlslProg mNeuronShader;
 	const char* mNeuronVert;
 	const char* mNeuronFrag;
@@ -169,17 +186,29 @@ public:
 	const char* mAxonVert;
 	const char* mAxonFrag;
     
+    gl::GlslProg mBlurShader;
+	const char* mBlurVert;
+	const char* mBlurFrag;
+
+    gl::GlslProg mDOFShader;
+	const char* mDOFVert;
+	const char* mDOFFrag;
+    
     //fbo
 	gl::Fbo mSourceFBO;
     gl::Fbo mBlur1FBO;
     gl::Fbo mBlur2FBO;
     gl::Fbo mDepthFBO;
     
+    float mTime;
     ci::CameraPersp				mCamera;
     
     Vec3f mNextCamPoint;
     float mLerper;
     
+    float xAmp, yAmp;
+    
+    float mBlurView;
 protected:	
 	//! singleton instance
 	static MindField *s_MindField;

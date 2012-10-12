@@ -83,7 +83,12 @@ public:
     bool currentlyculled;
 
         ci::CameraPersp				mCamera;
+
     
+    gl::GlslProg mBGShader;
+	const char* mBGVert;
+	const char* mBGFrag;
+    float mNoiseTime;
 protected:
 	//! singleton instance
 	static Cloth *s_Cloth;

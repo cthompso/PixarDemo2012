@@ -1,6 +1,8 @@
 #include "Tube.h" 
 #include "cinder/gl/gl.h"
 
+#include "cinder/Rand.h"
+
 void addQuadToMesh( TriMesh& mesh, const Vec3f& P0, const Vec3f& P1, const Vec3f& P2, const Vec3f& P3 )
 {
 	mesh.appendVertex( P0 );
@@ -321,6 +323,7 @@ void Tube::drawFrameSlices( float scale )
 void makeCircleProfile( std::vector<Vec3f>& prof, float rad, int segments )
 {
 	prof.clear();
+    rad = randFloat(0.005, 0.02);
 	float dt = 6.28318531f/(float)segments;
 	for( int i = 0; i < segments; ++i ) {
 		float t = i*dt;
