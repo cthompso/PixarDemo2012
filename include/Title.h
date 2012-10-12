@@ -63,6 +63,9 @@ protected:
     
 private:
 
+    float nameAlpha;
+    float titleAlpha;
+    float titleFade;
     
     //uv texture billboard
 	gl::Texture mTexture;
@@ -74,20 +77,19 @@ private:
 
     cairo::SurfaceImage mySurface;    
     
-	ci::gl::VboMesh::Layout mVboLayout;
-	std::vector<ci::Vec3f> mVboVertices;
-	ci::gl::VboMesh	mVboMesh;
+//	ci::gl::VboMesh::Layout mVboLayout;
+//	std::vector<ci::Vec3f> mVboVertices;
+//	ci::gl::VboMesh	mVboMesh;
+
+    // noise billboard shaders
+    gl::GlslProg mTitleShader;
+	const char* mTitleVertex;
+	const char* mTitleFrag;
     
     Rand mRand;
 	Perlin mPerlin;
     
-    double titleTimer;
-    
-    gl::GlslProg mTitleShader;
-	const char* mTitleVertex;
-	const char* mTitleFrag;
-	const char* mTitleGeom;
-    
+    double titleTimer;        
 };
 
 

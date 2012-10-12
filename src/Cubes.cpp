@@ -116,6 +116,7 @@ void Cubes::Render()
         glCullFace(GL_BACK);
         mCubesShader.bind();
         mCubesShader.uniform("mTime", (float)cubeTimer);
+        mCubesShader.uniform("camPos", cubesCamera.getEyePoint() );
         gl::draw( mVboMesh );
         mCubesShader.unbind();
         gl::disable(GL_CULL_FACE);

@@ -7,6 +7,7 @@ uniform vec3 sPos;
 varying vec3  DiffuseColor;
 uniform float mTime;
 
+varying float atten;
 varying vec4 outColor;
 varying vec4 cubeColor;
 
@@ -112,6 +113,6 @@ void main()
 	vec3 fCol = vec3(val);
 	gl_FragColor.rgb = vec3(0.2,0.0,1.0*outColor.x);
     //gl_FragColor = outColor;//vec3(1.0,1.0,0.0);
-	gl_FragColor.a = val;
+	gl_FragColor.a = val * atten;
 }
 

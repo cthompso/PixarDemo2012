@@ -5,10 +5,12 @@
 //uniform float rotation;
 //uniform float size;
 uniform float mTime;
+uniform vec3 camPos;
 
 varying vec4 coords;
 varying float outRand;
 varying vec4 outColor;
+varying float atten;
 
 //varying vec4 gl_FrontColorIn[];
 
@@ -47,6 +49,10 @@ void main(void)
 
     outRand = rand(gl_PositionIn[0].xy);
     outColor = vec4(outRand,1.0,1.0,1.0);
+    
+
+    atten = distance(gl_PositionIn[0].xyz,camPos);
+    atten = clamp(atten*0.05,0.0,1.0);
     
     if (opt) {
         for (int j = 0; j < 6; j++) {

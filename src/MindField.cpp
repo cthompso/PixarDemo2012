@@ -597,8 +597,8 @@ void MindField::bindShaders()
 {
     
     //string mPath = getResourcePath().generic_string();
-   // string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
-     string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
+    string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+   //  string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/neuron.vert";
     string nf = mPath + "/neuron.frag";
     mNeuronVert = nv.c_str();

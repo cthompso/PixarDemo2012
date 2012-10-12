@@ -303,8 +303,8 @@ void Cloth::bindShaders()
 {
     
     //string mPath = getResourcePath().generic_string();
-    //string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
-   string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
+    string mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
+//   string mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string nv = mPath + "/cloth.vert";
     string nf = mPath + "/cloth.frag";
     mClothVert = nv.c_str();

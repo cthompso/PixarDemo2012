@@ -40,12 +40,12 @@ class PixarDemo2012 : public ci::app::AppBasic
 
 public:
 
-	void						draw();
-	void						setup();
-	void						shutdown();
-	void						update();
-    void                        keyDown( KeyEvent event);
-	void                        mouseDown( MouseEvent event );
+	void draw();
+	void setup();
+	void shutdown();
+	void update();
+    void keyDown( KeyEvent event);
+	void mouseDown( MouseEvent event );
 
 	void renderGradientFBO();
     void renderCairoFBO();
@@ -134,11 +134,12 @@ void PixarDemo2012::bindShaders()
     theMindField.bindShaders();
     theCubes.BindShaders();
     theCloth.bindShaders();
+    theTitle.BindShaders();
     
      
     string mPath = getResourcePath().generic_string();
     mPath = "/Users/colin/Dev/cinder_projects/PixarDemo2012/resources";
-  //  mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
+//  mPath = "/Users/shalinkhyati/PixarDemo2012/resources";
     string mVert = mPath + "/fbo.vert";
     string mFrag = mPath + "/fbo.frag";
     mGradientVertex = mVert.c_str();
@@ -163,8 +164,6 @@ void PixarDemo2012::bindShaders()
 	catch( ... ) {
 		std::cout << "Unable to load shader" << std::endl;
 	}
-    
-    
 }
 
 
@@ -213,7 +212,7 @@ void PixarDemo2012::draw()
     gl::draw( mGradientFBO.getTexture(0), Rectf( 0, 0, getWindowWidth(), getWindowHeight()) );
     
     if ( drawTitle ) {
-        if ( mTime > 100.0f ) drawTitle = false;
+        if ( mTime > 10.0f ) drawTitle = false;
         theTitle.Render();
     }
 
@@ -249,7 +248,7 @@ void PixarDemo2012::draw()
     
     if ( drawFPS ) {
         string mString;
-        mString = str(boost::format("Framerate: %f") % getAverageFps() );
+        mString = str(boost::format("FRAMERATE: %f") % getAverageFps() );
         gl::drawString( mString, Vec2f( 10.0f, 10.0f ), Color::white(), mFont );
     }
 }
@@ -322,7 +321,8 @@ void PixarDemo2012::setup()
 	setFrameRate( 60.0f );
 	setWindowSize( 1000, 600 );
 
-    mFont = Font( loadResource("Calibri.ttf"), 18.0f );
+//    mFont = Font( loadResource("Calibri.ttf"), 18.0f );
+    mFont = Font( loadResource("synchro.ttf"), 18.0f );
     
 	// LOAD AUDIO
 	mAudioSource = audio::load( loadResource("diva.m4a") );
@@ -367,6 +367,16 @@ void PixarDemo2012::shutdown()
 
 void PixarDemo2012::update()
 {
+    if ( mFullScreen != isFullScreen() ) {
+        setFullScreen(mFullScreen);
+//        mCamera->setAspectRatio(getWindowAspectRatio());
+//        mySurface = cairo::SurfaceImage(getWindowWidth(),getWindowHeight(),true);
+		if ( isFullScreen() == true ) {
+			hideCursor();
+		} else {
+			showCursor();
+		}        
+    }
     
     mTime += 0.01f;
 
