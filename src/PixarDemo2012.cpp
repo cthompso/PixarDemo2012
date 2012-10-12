@@ -77,13 +77,12 @@ private:
     bool drawCloth;
 
     //balls and music stuff
-    float makeBall;
-    
+    float makeBall;    
     
     // FONT
     Font mFont;
     
-    ci::CameraPersp				mCamera;
+    ci::CameraPersp mCamera;
     
     //cairo billboard
 	Perlin mPerlin;

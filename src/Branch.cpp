@@ -9,6 +9,10 @@ Branch::Branch()
 {
 }
 
+Branch::~Branch()
+{
+}
+
 Branch::Branch( Vec2f loc, float radius, float time )
 {
     mBirth = time;
@@ -18,7 +22,7 @@ Branch::Branch( Vec2f loc, float radius, float time )
     opacity = 1.0f;
 	mLoc	= loc;
 //	mDir	= Rand::randVec2f();
-    mDir    = Vec2f(Rand::randFloat(-0.5f,0.5f),-1.0);
+    mDir    = Vec2f(Rand::randFloat(-0.5f,0.5f),1.0);
 	mVel	= Rand::randFloat( 5.0f );
 	mRadius	= 3.0f * radius;
 }
@@ -27,37 +31,47 @@ void Branch::update()
 {
 	//mLoc += mDir * mVel;
     mAge += 1.0f;
-    mVel *= 0.98f;
+    //mVel *= 0.98f;
 }
 
-void Branch::draw()
+void Branch::draw( cairo::Context &ctx )
 {
     float b = 1.0f - (mAge/mDeath);
     ColorA myCol = ColorA(CM_HSV,fmod(mBirth,1.0f),1.0f,1.0f,1.0f*b);
-    myCol = ColorA(1.0f,1.0f,1.0f,1.0f);
-    gl::color(myCol);
-	gl::drawSolidCircle( mLoc, mRadius, 32 );
+    myCol = ColorA(1.0f,1.0f,1.0f,opacity);
+//    gl::color(myCol);
+//	gl::drawSolidCircle( mLoc, mRadius, 32 );
+    ctx.setSource(myCol);
+    ctx.circle(mLoc.x,mLoc.y,mRadius);
+    ctx.fill();
 
 
-//    opacity = 1 - mAge/mDeath;
-//    mLoc.x += mDir.x * speed;
-//    mLoc.y += mDir.y * speed;
+    opacity = 1 - mAge/mDeath;
+    mLoc.x += mDir.x * speed;
+    mLoc.y += mDir.y * speed;
+
+    ctx.newPath();
 //    beginShape();
-//    float cx,cy;
-//    cx = 0;
-//    cy = 0;
-//    float r = 10;
-//    pushMatrix();
-//    translate(x,y);
-//    for (float i = 0; i < age * .1; i += .1) {
+    float cx,cy;
+    cx = 0;
+    cy = 0;
+    float r = 10;
+    ctx.pushGroup();
+    ctx.translate(mLoc);
+    for (float i = 0; i < mAge * .1; i += .1) {
+        ctx.lineTo(cx, cy);
 //        curveVertex(cx,cy);
-//        cx += mDir.x + (r * cos(cx));
-//        cy += mDir.y + (r * sin(cy));
-//        r *= .96;
-//        
-//    }
+        cx += mDir.x + (r * cos(cx));
+        cy += mDir.y + (r * sin(cy));
+        r *= .96;
+        
+    }
+    //ctx.closePath();
 //    endShape();
-//    popMatrix();
+    ctx.popGroup();
+
+    ctx.stroke();
+    ctx.save();
 }
 
 bool Branch::Dead() {

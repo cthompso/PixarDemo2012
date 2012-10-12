@@ -80,15 +80,15 @@ void Title::Render()
 //    float step = sqrt( (float(getWindowWidth()) * float(getWindowHeight())) / numBalls ) ;
 //    float halfStep = step / 2.0f;
 //    Color ballColor = Color(1.0f,1.0f,1.0f);
-//    cairo::Context ctx(mySurface);
-//    
-//    //clear out background
+    cairo::Context ctx(mySurface);
+//
+//    clear out background
 //    ctx.setSourceRgba(0.0, 0.0, 0.0, 0.0);
 //    ctx.setOperator(0); //clear operator
 //    ctx.rectangle(getWindowBounds());
 //    ctx.fill();
 //    ctx.setOperator(2); //over operator
-//    
+//
 //    //draw circles to screen grid
 //    mPerlin.setSeed(1.0f);
 //    float noiseVal = 0.0f;
@@ -106,18 +106,19 @@ void Title::Render()
 //    }
 //    
 //    
-//    gl::Texture cairoTexture(mySurface.getSurface());
-//    cairoTexture.enableAndBind();
-//    gl::drawSolidRect(getWindowBounds());
-//    cairoTexture.unbind();
-//    
-//    float make = 0.0f;
-//    if (make > 0.075f) branches.addBranches(1,make*100.0f,titleTimer);
-//    branches.draw();
-    
-//    gl::clear( ColorAf::gray( 0.2f ) );
     gl::setViewport( getWindowBounds() );
     gl::setMatricesWindow( getWindowSize(), true );
+
+    
+//    int total = 10;
+//    if (total > 0.075f) branches.addBranches(1,1.0f,titleTimer);
+//    branches.draw(ctx);
+
+    
+    gl::Texture cairoTexture(mySurface.getSurface());
+    cairoTexture.enableAndBind();
+    gl::drawSolidRect(getWindowBounds());
+    cairoTexture.unbind();
     
     mTexture.enableAndBind();
     float height = getWindowWidth()/4;

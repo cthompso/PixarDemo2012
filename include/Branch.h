@@ -1,14 +1,21 @@
 #pragma once
 #include "cinder/Channel.h"
 #include "cinder/Vector.h"
-
+#include "cinder/cairo/Cairo.h"
 #include <vector>
+
+using namespace ci;
+using namespace cinder;
+
+
 
 class Branch {
  public:
 	Branch();
+    ~Branch();
 	Branch( ci::Vec2f, float, float );
 	void update();
+	void draw( cairo::Context &ctx );
 	void draw();
     void Move();
     void Kill();
