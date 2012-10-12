@@ -334,10 +334,11 @@ void PixarDemo2012::draw()
     
     
     // Balls
-    gl::setMatricesWindow( getWindowSize(), true );
-    if (makeBall > 0.075f) mParticleController.addParticles(1,makeBall*100.0f,mTime);
-    mParticleController.draw();
-    
+    if ( !drawCubes ) {
+        gl::setMatricesWindow( getWindowSize(), true );
+        if (makeBall > 0.075f) mParticleController.addParticles(1,makeBall*100.0f,mTime);
+        mParticleController.draw();
+    }
     if ( drawFPS ) {
         string mString;
         mString = str(boost::format("FRAMERATE: %f") % getAverageFps() );
@@ -446,7 +447,7 @@ void PixarDemo2012::setup()
     drawCairoFBO    = true;
     drawMindField   = false;
     drawFFT         = false;
-    mFullScreen     = false;
+    mFullScreen     = true;
     drawFPS         = false;
     drawCubes       = false;
     drawCloth       = false;

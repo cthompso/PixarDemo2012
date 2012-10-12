@@ -32,7 +32,7 @@ void Cubes::Init()
 
     mNextCamPoint = mNextCamPoint = Vec3f(randFloat(-10,10), randFloat(-10,10), randFloat(-10,10));
     mLerper = 0.0f;
-    amt = 1.0f;
+    amt = 0.0f;
     
 	mVboLayout.setStaticPositions();
     
@@ -88,7 +88,7 @@ void Cubes::BindShaders()
     //    printf("vert is: %s\n",mGradientVertex);
     //    printf("frag is: %s\n",mGradientFrag);
 	try {
-        if (true) {
+        if (false) {
             //for shader dev
             int32_t maxGeomOutputVertices;
             glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, & maxGeomOutputVertices);
@@ -111,24 +111,24 @@ void Cubes::BindShaders()
 }
 void Cubes::Render()
 {
-        gl::setMatrices( cubesCamera );
-        gl::enableDepthRead();
-        gl::enableDepthWrite();
-        gl::enable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        mCubesShader.bind();
-        mCubesShader.uniform("mTime", (float)cubeTimer);
-        amt = amt;
-        if (theMindField.xAmp > 0.05f ) {
-            amt = theMindField.xAmp * 10.0f;
-        }
-        mCubesShader.uniform("mGlow", amt );
-        mCubesShader.uniform("camPos", cubesCamera.getEyePoint() );
-        gl::draw( mVboMesh );
-        mCubesShader.unbind();
-        gl::disable(GL_CULL_FACE);
-        gl::disableDepthRead();
-        gl::disableDepthWrite();
+    gl::setMatrices( cubesCamera );
+    gl::enableDepthRead();
+    gl::enableDepthWrite();
+    gl::enable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    mCubesShader.bind();
+    mCubesShader.uniform("mTime", (float)cubeTimer);
+    amt *= 0.98f;
+    if (theMindField.xAmp > 0.07f ) {
+        amt = 0.5f;
+    }
+    mCubesShader.uniform("mGlow", amt );
+    mCubesShader.uniform("camPos", cubesCamera.getEyePoint() );
+    gl::draw( mVboMesh );
+    mCubesShader.unbind();
+    gl::disable(GL_CULL_FACE);
+    gl::disableDepthRead();
+    gl::disableDepthWrite();
 }
 void Cubes::Update()
 {

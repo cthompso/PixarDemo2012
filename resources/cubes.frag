@@ -112,7 +112,7 @@ void main()
     float val = (snoise(nSpace) + 1.0) * 0.5;
 	vec3 fCol = vec3(val);
 	gl_FragColor.rgb = vec3(0.2,0.0,1.0*outColor.x);
-    gl_FragColor.rgb = vec3(1.0*outColor.r,1.0*outColor.r,1.0*outColor.r);
-	gl_FragColor.a = 1.0;//val * atten;
+    gl_FragColor.rgb += vec3(1.0*outColor.g,0.0,0.0);
+	gl_FragColor.a = val * atten;
 }
 
